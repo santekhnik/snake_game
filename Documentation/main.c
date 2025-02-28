@@ -5,7 +5,7 @@
 #define START_BYTE 0x7E
 
 // Функція обчислення CRC-16-CCITT (поліном 0x1021, початкове значення 0xFFFF)
-uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd, uint16_t frog_x, uint16_t frog_y) {
+uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd, uint8_t frog_x, uint8_t frog_y) {
     uint16_t crc = 0xFFFF;
     crc ^= ((uint16_t)cmd << 8);
     crc ^= ((uint16_t)frog_x << 8) | frog_y;
@@ -42,6 +42,11 @@ uint16_t encode_frame(const uint8_t *payload, uint8_t payload_len, uint8_t *fram
         printf("%02X", frame[i]);
     }
     printf("\n");
+    printf("Frame structure: ");
+    for (uint8_t i = 0; i < (payload_len + 7); i++) {
+        printf("%02X ", frame[i]);
+    }
+    printf("\n");
     return crc;
 }
 
@@ -68,16 +73,17 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
     uint16_t received_crc = (frame[5 + payload_len] << 8) | frame[6 + payload_len];
     // Обчислення CRC на основі PAYLOAD
     uint16_t computed_crc = crc16_ccitt(&frame[3], payload_len, cmd_byte, frog_x, frog_y);
+    printf("Received CRC: 0x%04X, Computed CRC: 0x%04X\n", received_crc, computed_crc);
     return (received_crc == computed_crc) ? 0 : -4;
 }
 
 int main(void) {
     // Приклад даних для передачі
     uint8_t payload[] = "hello1234!";
-    uint8_t CMD = 2;
+    uint8_t CMD =2;
     uint8_t payload_len = (uint8_t)strlen((char*)payload);
-    uint16_t frog_x = 10;
-    uint16_t frog_y = 13;
+    uint8_t frog_x =4;
+    uint8_t frog_y =1;
 
     // Тут можна число збільшити при потребі
     uint8_t frame[255];
