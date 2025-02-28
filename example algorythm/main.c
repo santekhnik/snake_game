@@ -73,7 +73,7 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
 
 int main(void) {
     // Приклад даних для передачі
-    uint8_t payload[] = "hello bebebe";
+    uint8_t payload[] = "hello1234!";
     uint8_t CMD = 2;
     uint8_t payload_len = (uint8_t)strlen((char*)payload);
     uint16_t frog_x = 10;
