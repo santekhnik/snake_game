@@ -1,2 +1,11 @@
 .idea/
 env3.11/
+
+*.pyc
+*.pyo
+
+PC/src/__pycache__/
+PC/test.py
+
+
+
