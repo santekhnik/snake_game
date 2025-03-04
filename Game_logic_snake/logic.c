@@ -139,9 +139,9 @@ int main() {
         while (1) {
             choice = _getch();
             if (choice == 'r') {
-                break; // Перезапуск
+                break; 
             }
-            else if (choice == 27) { // Escape (можна додати інші варіанти)
+            else if (choice == 27) { 
                 return 0;
             }
         }
