@@ -81,7 +81,7 @@ int main(void)
 	    uint8_t frame[255];
 
 	    // Кодування кадру
-	    uint16_t crc = encode_frame(payload, payload_len, frame, CMD, frog_x, frog_y);
+	    uint16_t crc = encode_frame_snake(payload, payload_len, frame, CMD, frog_x, frog_y);
 	    printf("Frame ready, CRC: 0x%04X\n", crc);
 
 	    // Загальна довжина кадру = 1 (START) + 1 (CMD) + 1 (LENGTH) + payload + 2 (FROG) + 2 (CRC)
