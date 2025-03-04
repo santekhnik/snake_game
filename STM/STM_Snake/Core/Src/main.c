@@ -45,7 +45,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 
-uint8_t rxdata[7];
+uint8_t frame[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,8 +77,6 @@ int main(void)
 	    uint8_t frog_y =1;
 
 
-	    // Тут можна число збільшити при потребі
-	    uint8_t frame[255];
 
 	    // Кодування кадру
 	    uint16_t crc = encode_frame_snake(payload, payload_len, frame, CMD, frog_x, frog_y);
@@ -119,7 +117,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_DMA(&huart1,rxdata,sizeof(rxdata));
+  HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -261,8 +259,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        HAL_UART_Transmit(&huart1, rxdata, sizeof(rxdata), 100);
-        HAL_UART_Receive_DMA(&huart1, rxdata, sizeof(rxdata));
+        HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100);
+        HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
 
