@@ -17,11 +17,11 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <protocol.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,6 +70,31 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	 uint8_t payload[] = "w";
+	    uint8_t CMD =3;
+	    uint8_t payload_len = (uint8_t)strlen((char*)payload);
+	    uint8_t frog_x =4;
+	    uint8_t frog_y =1;
+
+
+	    // Тут можна число збільшити при потребі
+	    uint8_t frame[255];
+
+	    // Кодування кадру
+	    uint16_t crc = encode_frame(payload, payload_len, frame, CMD, frog_x, frog_y);
+	    printf("Frame ready, CRC: 0x%04X\n", crc);
+
+	    // Загальна довжина кадру = 1 (START) + 1 (CMD) + 1 (LENGTH) + payload + 2 (FROG) + 2 (CRC)
+	    uint8_t frame_len = payload_len + 7;
+
+	    // Декодування та перевірка кадру
+	    int result = decode_frame(frame, frame_len);
+	    if (result == 0)
+	        HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+	    else
+	    	HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);
+
+	    return 0;
 
   /* USER CODE END 1 */
 
