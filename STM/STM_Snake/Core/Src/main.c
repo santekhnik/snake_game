@@ -17,11 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <protocol.h>
+
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "protocol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,29 +71,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	 uint8_t payload[] = "w";
-	    uint8_t CMD =3;
-	    uint8_t payload_len = (uint8_t)strlen((char*)payload);
-	    uint8_t frog_x =4;
-	    uint8_t frog_y =1;
 
 
-
-	    // Кодування кадру
-	    uint16_t crc = encode_frame_snake(payload, payload_len, frame, CMD, frog_x, frog_y);
-	    printf("Frame ready, CRC: 0x%04X\n", crc);
-
-	    // Загальна довжина кадру = 1 (START) + 1 (CMD) + 1 (LENGTH) + payload + 2 (FROG) + 2 (CRC)
-	    uint8_t frame_len = payload_len + 7;
-
-	    // Декодування та перевірка кадру
-	    int result = decode_frame(frame, frame_len);
-	    if (result == 0)
-	        HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
-	    else
-	    	HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);
-
-	    return 0;
 
   /* USER CODE END 1 */
 
@@ -259,7 +239,13 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100);
+    	uint16_t test_massage[sizeof(frame)+4];
+    	uint8_t cmd = 2;
+    	uint8_t frog_x = 12;
+    	uint8_t frog_y = 4;
+    	uint8_t encoded_frame[10];  // припустимо, що максимальний розмір кадру 10
+    	encode_frame_snake(frame, sizeof(frame), encoded_frame, cmd, frog_x, frog_y);
+    	HAL_UART_Transmit(&huart1, encoded_frame, sizeof(encoded_frame), 100);
         HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
