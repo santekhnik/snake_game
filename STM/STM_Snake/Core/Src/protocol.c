@@ -94,4 +94,4 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
     uint16_t computed_crc = crc16_ccitt(&frame[3], 5, cmd_byte);    // Обчислення CRC на основі PAYLOAD
     return (received_crc == computed_crc) ? 0 : -4;
 }
-//bebebe
+
