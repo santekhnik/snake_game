@@ -55,12 +55,20 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void simulate_snake_game();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void simulate_snake_game() {
+    uint8_t snake_x = 10, snake_y = 15;
+    uint8_t frog_x = 20, frog_y = 25;
+    uint8_t payload[2] = {snake_x, snake_y};
 
+    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
+
+    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
+}
 /* USER CODE END 0 */
 
 /**
@@ -71,8 +79,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
-
 
   /* USER CODE END 1 */
 
@@ -98,27 +104,16 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
+  simulate_snake_game();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	    if (huart->Instance == USART1) {
-	    	void simulate_snake_game() {
-	    	    uint8_t frame[9];
-	    	    uint8_t snake_length = 5;
-	    	    uint8_t snake_x = 10, snake_y = 15;
-	    	    uint8_t frog_x = 20, frog_y = 25;
-	    	    uint8_t payload[2] = {snake_x, snake_y};
+  {
 
-	    	    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
 
-	    	    HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100); // Відправка пакету через UART
-	    	}
-	        //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
-	    }
-	}
+
 
     /* USER CODE END WHILE */
 
@@ -150,6 +145,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
@@ -255,18 +251,15 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-    	void simulate_snake_game() {
-    	    uint8_t frame[9];
-    	    uint8_t snake_length = 5;
-    	    uint8_t snake_x = 10, snake_y = 15;
-    	    uint8_t frog_x = 20, frog_y = 25;
-    	    uint8_t payload[2] = {snake_x, snake_y};
+        int result = decode_frame(frame, sizeof(frame));
 
-    	    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
 
-    	    HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100); // Відправка пакету через UART
-    	}
-        //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+        char response[30];
+        snprintf(response, sizeof(response), "Decode result: %d\n", result);
+        HAL_UART_Transmit(&huart1, (uint8_t*)response, strlen(response), 100);
+        simulate_snake_game();
+
+        HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
 
