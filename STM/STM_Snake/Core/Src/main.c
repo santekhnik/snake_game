@@ -17,7 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <protocol.h>
+
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -45,7 +45,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 
-uint8_t rxdata[7];
+uint8_t frame[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,31 +70,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	 uint8_t payload[] = "w";
-	    uint8_t CMD =3;
-	    uint8_t payload_len = (uint8_t)strlen((char*)payload);
-	    uint8_t frog_x =4;
-	    uint8_t frog_y =1;
 
 
-	    // Тут можна число збільшити при потребі
-	    uint8_t frame[255];
-
-	    // Кодування кадру
-	    uint16_t crc = encode_frame_snake(payload, payload_len, frame, CMD, frog_x, frog_y);
-	    printf("Frame ready, CRC: 0x%04X\n", crc);
-
-	    // Загальна довжина кадру = 1 (START) + 1 (CMD) + 1 (LENGTH) + payload + 2 (FROG) + 2 (CRC)
-	    uint8_t frame_len = payload_len + 7;
-
-	    // Декодування та перевірка кадру
-	    int result = decode_frame(frame, frame_len);
-	    if (result == 0)
-	        HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
-	    else
-	    	HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);
-
-	    return 0;
 
   /* USER CODE END 1 */
 
@@ -119,7 +96,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_DMA(&huart1,rxdata,sizeof(rxdata));
+  HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -261,8 +238,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        HAL_UART_Transmit(&huart1, rxdata, sizeof(rxdata), 100);
-        HAL_UART_Receive_DMA(&huart1, rxdata, sizeof(rxdata));
+        HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100);
+        HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
 

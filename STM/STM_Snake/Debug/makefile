@@ -60,8 +60,8 @@ all: main-build
 main-build: STM_Snake.elf secondary-outputs
 
 # Tool invocations
-STM_Snake.elf STM_Snake.map: $(OBJS) $(USER_OBJS) G:\GL_proj\snake_game\STM\STM_Snake\STM32F051R8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM_Snake.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"G:\GL_proj\snake_game\STM\STM_Snake\STM32F051R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM_Snake.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM_Snake.elf STM_Snake.map: $(OBJS) $(USER_OBJS) C:\GL_poject\snake_game\STM\STM_Snake\STM32F051R8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM_Snake.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\GL_poject\snake_game\STM\STM_Snake\STM32F051R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM_Snake.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
