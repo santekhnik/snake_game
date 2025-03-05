@@ -73,7 +73,6 @@ uint16_t encode_frame_end(const uint8_t *payload, uint8_t payload_len, uint8_t *
     return frame;
 }
 
-
 int decode_frame(const uint8_t *frame, uint8_t frame_len) {
 
     if (frame_len < 5)
@@ -88,4 +87,4 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
     uint16_t computed_crc = crc16_ccitt(&frame[3], 5, cmd_byte);    // Обчислення CRC на основі PAYLOAD
     return (received_crc == computed_crc) ? 0 : -4;
 }
-
+//bebebe
