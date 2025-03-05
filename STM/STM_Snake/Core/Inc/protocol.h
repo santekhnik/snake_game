@@ -13,7 +13,7 @@ uint16_t crc16_ccitt_snake(const uint8_t *data, uint16_t len, uint8_t cmd, uint8
 uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd);
 
 //функція кодування пакету змії
-uint16_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y);
+void encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y);
 
 //функція кодування пакету помилки
 uint16_t encode_frame_err(const uint8_t *payload, uint8_t *frame, uint8_t cmd_byte) ;

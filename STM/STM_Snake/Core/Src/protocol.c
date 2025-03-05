@@ -4,6 +4,8 @@
 #include <string.h>
 #include <protocol.h>
 
+
+
 // Функція обчислення CRC-16-CCITT для пакету змійки (поліном 0x1021, початкове значення 0xFFFF)
 uint16_t crc16_ccitt_snake(const uint8_t *data, uint16_t len, uint8_t cmd, uint8_t frog_x, uint8_t frog_y) {
     uint16_t crc = 0xFFFF;									//початкове значення
@@ -38,17 +40,17 @@ uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd) {
 }
 
 //функція кодування пакету змії
-uint16_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y) {
-    frame[0] = START_BYTE;                  				// Початковий байт
-    frame[1] = cmd_byte;                    				// Байт комади
-    frame[2] = payload_len;                 				// Довжина корисного навантаження
-    memcpy(&frame[3], payload, payload_len);				// копіюємо пейлоад
-    frame[3 + payload_len] = frog_x;        				// x жабки
-    frame[4 + payload_len] = frog_y;        				// y жабки
-    uint16_t crc = crc16_ccitt_snake(payload, payload_len, cmd_byte, frog_x, frog_y);    // Додавання CRC (старший байт перший)
-    frame[5 + payload_len] = (crc >> 8) & 0xFF; 			// crc high
-    frame[6 + payload_len] = crc & 0xFF;        			// crc low
-    return frame;
+void encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y) {
+    frame[0] = START_BYTE;
+    frame[1] = cmd_byte;
+    frame[2] = payload_len;
+    memcpy(&frame[3], payload, payload_len);
+    frame[3 + payload_len] = frog_x;
+    frame[4 + payload_len] = frog_y;
+
+    uint16_t crc = crc16_ccitt_snake(payload, payload_len, cmd_byte, frog_x, frog_y);
+    frame[5 + payload_len] = (crc >> 8) & 0xFF;
+    frame[6 + payload_len] = crc & 0xFF;
 }
 
 //функція кодування пакету помилки

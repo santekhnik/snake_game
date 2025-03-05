@@ -1,6 +1,6 @@
-../Core/Src/protocol.c:8:10:crc16_ccitt_snake	32	static
-../Core/Src/protocol.c:24:10:crc16_ccitt	24	static
-../Core/Src/protocol.c:41:10:encode_frame_snake	56	static
-../Core/Src/protocol.c:55:10:encode_frame_err	40	static
-../Core/Src/protocol.c:66:10:encode_frame_end	48	static
-../Core/Src/protocol.c:76:5:decode_frame	40	static
+../Core/Src/protocol.c:10:10:crc16_ccitt_snake	32	static
+../Core/Src/protocol.c:26:10:crc16_ccitt	24	static
+../Core/Src/protocol.c:43:6:encode_frame_snake	56	static
+../Core/Src/protocol.c:57:10:encode_frame_err	40	static
+../Core/Src/protocol.c:68:10:encode_frame_end	48	static
+../Core/Src/protocol.c:78:5:decode_frame	40	static

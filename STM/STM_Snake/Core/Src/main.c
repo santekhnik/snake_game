@@ -239,7 +239,13 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100);
+    	uint16_t test_massage[sizeof(frame)+4];
+    	uint8_t cmd = 2;
+    	uint8_t frog_x = 12;
+    	uint8_t frog_y = 4;
+    	uint8_t encoded_frame[10];  // припустимо, що максимальний розмір кадру 10
+    	encode_frame_snake(frame, sizeof(frame), encoded_frame, cmd, frog_x, frog_y);
+    	HAL_UART_Transmit(&huart1, encoded_frame, sizeof(encoded_frame), 100);
         HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
