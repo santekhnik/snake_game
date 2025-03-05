@@ -103,7 +103,23 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
+  {void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	    if (huart->Instance == USART1) {
+	    	void simulate_snake_game() {
+	    	    uint8_t frame[9];
+	    	    uint8_t snake_length = 5;
+	    	    uint8_t snake_x = 10, snake_y = 15;
+	    	    uint8_t frog_x = 20, frog_y = 25;
+	    	    uint8_t payload[2] = {snake_x, snake_y};
+
+	    	    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
+
+	    	    HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100); // Відправка пакету через UART
+	    	}
+	        //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+	    }
+	}
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -239,14 +255,18 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-    	uint16_t test_massage[sizeof(frame)+4];
-    	uint8_t cmd = 2;
-    	uint8_t frog_x = 12;
-    	uint8_t frog_y = 4;
-    	uint8_t encoded_frame[10];  // припустимо, що максимальний розмір кадру 10
-    	encode_frame_snake(frame, sizeof(frame), encoded_frame, cmd, frog_x, frog_y);
-    	HAL_UART_Transmit(&huart1, encoded_frame, sizeof(encoded_frame), 100);
-        HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+    	void simulate_snake_game() {
+    	    uint8_t frame[9];
+    	    uint8_t snake_length = 5;
+    	    uint8_t snake_x = 10, snake_y = 15;
+    	    uint8_t frog_x = 20, frog_y = 25;
+    	    uint8_t payload[2] = {snake_x, snake_y};
+
+    	    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
+
+    	    HAL_UART_Transmit(&huart1, frame, sizeof(frame), 100); // Відправка пакету через UART
+    	}
+        //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
 
