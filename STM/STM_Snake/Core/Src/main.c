@@ -61,11 +61,10 @@ void simulate_snake_game();
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void simulate_snake_game() {
-    uint8_t snake_x = 10, snake_y = 15;
     uint8_t frog_x = 20, frog_y = 25;
-    uint8_t payload[2] = {snake_x, snake_y};
+    uint8_t payload[8] = {10,15,11,15,12,15,13,15};
 
-    uint8_t frame_length = encode_frame_snake(payload, 2, frame, 0x02, frog_x, frog_y);
+    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
 
     HAL_UART_Transmit(&huart1, frame, frame_length, 100);
 }
@@ -251,12 +250,10 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        int result = decode_frame(frame, sizeof(frame));
 
 
-        char response[30];
-        snprintf(response, sizeof(response), "Decode result: %d\n", result);
-        HAL_UART_Transmit(&huart1, (uint8_t*)response, strlen(response), 100);
+
+
         simulate_snake_game();
 
         HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));

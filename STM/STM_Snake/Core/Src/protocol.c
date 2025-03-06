@@ -44,16 +44,16 @@ uint16_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t
     frame[0] = START_BYTE;
     frame[1] = cmd_byte;
     frame[2] = payload_len;
+
     memcpy(&frame[3], payload, payload_len);
     frame[3 + payload_len] = frog_x;
     frame[4 + payload_len] = frog_y;
-
     uint16_t crc = crc16_ccitt_snake(payload, payload_len, cmd_byte, frog_x, frog_y);
     frame[5 + payload_len] = (crc >> 8) & 0xFF;
     frame[6 + payload_len] = crc & 0xFF;
 
     // Загальна довжина пакету = 1 (START) + 1 (CMD) + 1 (payload_len) + payload_len + 1 (frog_x) + 1 (frog_y) + 2 (CRC) = payload_len + 7
-    return (uint8_t)(payload_len + 7);
+    return (uint8_t)(7 + payload_len);
 }
 
 //функція кодування пакету помилки
@@ -94,4 +94,4 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
     uint16_t computed_crc = crc16_ccitt(&frame[3], 5, cmd_byte);    // Обчислення CRC на основі PAYLOAD
     return (received_crc == computed_crc) ? 0 : -4;
 }
-
+//bebebe
