@@ -8,7 +8,7 @@
 #define START_BYTE 0x7E
 
 // Обчислення CRC-16-CCITT для пакету змійки (поліном 0x1021, початкове значення 0xFFFF)
-uint16_t crc16_ccitt_snake(const uint8_t *data, uint16_t len, uint8_t cmd, uint8_t frog_x, uint8_t frog_y);
+uint16_t crc16_ccitt_snake(const uint8_t *data, uint8_t len, uint8_t cmd, uint8_t frog_x, uint8_t frog_y);
 // Обчислення CRC-16-CCITT для загальних випадків (поліном 0x1021, початкове значення 0xFFFF)
 uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd);
 

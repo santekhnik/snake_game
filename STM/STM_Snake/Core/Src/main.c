@@ -47,7 +47,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 /* USER CODE BEGIN PV */
 
 uint8_t frame[9];
-
+uint8_t tx_buffer[128];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,18 +56,24 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-void simulate_snake_game();
+void simulate_protocol_func();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void simulate_snake_game() {
+void simulate_protocol_func() {
     uint8_t frog_x = 20, frog_y = 25;
-    uint8_t payload[] = {10,15};
+    uint8_t payload[] = {10,15,10,15,10,15,10,15,10,15,10,15,10,15,10,15};
 
-    uint8_t frame_length = encode_frame_snake(payload, sizeof(payload), frame, 0x02, frog_x, frog_y);
+   // uint8_t test_1 = encode_frame_snake(payload, sizeof(payload), tx_buffer, 0x02, frog_x, frog_y);
+  //  uint8_t test_2 = crc16_ccitt_snake (payload, sizeof(payload), 0x02, frog_x, frog_y);
+   // uint8_t test_3 = encode_frame_err (payload,tx_buffer,0x02);
+   // HAL_UART_Transmit(&huart1, tx_buffer, test_1, 100);
+  //  HAL_UART_Transmit(&huart1, tx_buffer, test_2, 100);
+    HAL_UART_Transmit(&huart1, tx_buffer, test_3, 100);
 
-    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
+
+
 }
 /* USER CODE END 0 */
 
@@ -104,7 +110,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
-  simulate_snake_game();
+  simulate_protocol_func();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -255,7 +261,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 
 
-        simulate_snake_game();
+
 
         HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
