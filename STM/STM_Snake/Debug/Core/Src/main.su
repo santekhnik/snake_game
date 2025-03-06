@@ -1,8 +1,8 @@
-../Core/Src/main.c:63:6:simulate_snake_game	40	static
-../Core/Src/main.c:77:5:main	8	static
-../Core/Src/main.c:128:6:SystemClock_Config	104	static
-../Core/Src/main.c:174:13:MX_USART1_UART_Init	8	static
-../Core/Src/main.c:207:13:MX_DMA_Init	16	static
-../Core/Src/main.c:225:13:MX_GPIO_Init	48	static
-../Core/Src/main.c:251:6:HAL_UART_RxCpltCallback	16	static
-../Core/Src/main.c:269:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:64:6:simulate_snake_game	32	static
+../Core/Src/main.c:78:5:main	8	static
+../Core/Src/main.c:129:6:SystemClock_Config	104	static
+../Core/Src/main.c:175:13:MX_USART1_UART_Init	8	static
+../Core/Src/main.c:208:13:MX_DMA_Init	16	static
+../Core/Src/main.c:226:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:252:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/main.c:270:6:Error_Handler	8	static,ignoring_inline_asm

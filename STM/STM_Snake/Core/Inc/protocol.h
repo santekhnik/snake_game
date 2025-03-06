@@ -23,7 +23,7 @@ uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd);
 //   [5+payload_len] : CRC (старший байт)
 //   [6+payload_len] : CRC (молодший байт)
 // Функція повертає загальну довжину сформованого пакету.
-uint16_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y);
+uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y);
 
 // Функція кодування пакету помилки.
 // Структура пакету:

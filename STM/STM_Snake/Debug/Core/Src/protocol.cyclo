@@ -1,6 +1,6 @@
 ../Core/Src/protocol.c:11:10:crc16_ccitt_snake	4
 ../Core/Src/protocol.c:27:10:crc16_ccitt	4
-../Core/Src/protocol.c:43:10:encode_frame_snake	1
-../Core/Src/protocol.c:60:10:encode_frame_err	1
-../Core/Src/protocol.c:73:10:encode_frame_end	1
-../Core/Src/protocol.c:83:5:decode_frame	5
+../Core/Src/protocol.c:43:9:encode_frame_snake	2
+../Core/Src/protocol.c:69:10:encode_frame_err	1
+../Core/Src/protocol.c:82:10:encode_frame_end	1
+../Core/Src/protocol.c:92:5:decode_frame	5

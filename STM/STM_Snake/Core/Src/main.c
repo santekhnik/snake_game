@@ -46,7 +46,8 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 
-uint8_t frame[5];
+uint8_t frame[9];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,9 +63,9 @@ void simulate_snake_game();
 /* USER CODE BEGIN 0 */
 void simulate_snake_game() {
     uint8_t frog_x = 20, frog_y = 25;
-    uint8_t payload[8] = {10,15,11,15,12,15,13,15};
+    uint8_t payload[] = {10,15};
 
-    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
+    uint8_t frame_length = encode_frame_snake(payload, sizeof(payload), frame, 0x02, frog_x, frog_y);
 
     HAL_UART_Transmit(&huart1, frame, frame_length, 100);
 }
