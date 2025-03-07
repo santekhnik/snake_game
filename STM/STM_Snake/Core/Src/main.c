@@ -46,8 +46,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 
-uint8_t frame[9];
-uint8_t tx_buffer[128];
+uint8_t frame[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,24 +55,18 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-void simulate_protocol_func();
+void simulate_snake_game();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void simulate_protocol_func() {
+void simulate_snake_game() {
     uint8_t frog_x = 20, frog_y = 25;
-    uint8_t payload[] = {10,15,10,15,10,15,10,15,10,15,10,15,10,15,10,15};
+    uint8_t payload[8] = {10,15,11,15,12,15,13,15};
 
-   // uint8_t test_1 = encode_frame_snake(payload, sizeof(payload), tx_buffer, 0x02, frog_x, frog_y);
-  //  uint8_t test_2 = crc16_ccitt_snake (payload, sizeof(payload), 0x02, frog_x, frog_y);
-   // uint8_t test_3 = encode_frame_err (payload,tx_buffer,0x02);
-   // HAL_UART_Transmit(&huart1, tx_buffer, test_1, 100);
-  //  HAL_UART_Transmit(&huart1, tx_buffer, test_2, 100);
-    HAL_UART_Transmit(&huart1, tx_buffer, test_3, 100);
+    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
 
-
-
+    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
 }
 /* USER CODE END 0 */
 
@@ -93,6 +86,7 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -110,16 +104,22 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
-  simulate_protocol_func();
+  simulate_snake_game();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //simulate_snake_game();
+	  uint8_t frame[5]={0x7E,0x01,0x01,0xE1,0xF0};
+      //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
 
-
-
+      uint8_t test_receive = decode_frame(frame,sizeof(frame));
+      HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
+      if  (test_receive==0){
+      HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);
+      }
 
     /* USER CODE END WHILE */
 
@@ -261,12 +261,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 
 
-
+        simulate_snake_game();
 
         HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
-    }
+        int8_t test_receive = decode_frame(frame,5);
+        HAL_UART_Transmit(&huart1, test_receive, 1, 100);
+        if  (test_receive==0){
+        HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,GPIO_PIN_SET);
+        }
 }
-
+}
 /* USER CODE END 4 */
 
 /**
@@ -292,7 +296,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t *file,  uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
