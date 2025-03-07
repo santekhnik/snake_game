@@ -59,7 +59,7 @@ def connecting_stm( message="Hello \n"):
                     response = ser.readline()
                     if response:
                         print(f"Отримано: {response.decode(errors='ignore').strip()}", ser.is_open)
-                        break
+                        return ser
 
                     if time.time() - start_time > 2:
                         print(f"Порт {UART_PORT} не відповідає після 2 секунд очікування.")
@@ -74,4 +74,3 @@ def connecting_stm( message="Hello \n"):
         print(f"Порт {UART_PORT} не доступний")
         pass
 
-connecting_stm()
