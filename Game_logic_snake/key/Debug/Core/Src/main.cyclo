@@ -1,0 +1,11 @@
+../Core/Src/main.c:48:6:HAL_UART_RxCpltCallback	10
+../Core/Src/main.c:67:6:send_coordinates	2
+../Core/Src/main.c:79:6:send_preload_arrays	2
+../Core/Src/main.c:89:6:spawn_apple	1
+../Core/Src/main.c:94:6:move_snake	8
+../Core/Src/main.c:120:5:main	9
+../Core/Src/main.c:185:6:SystemClock_Config	4
+../Core/Src/main.c:230:13:MX_USART1_UART_Init	2
+../Core/Src/main.c:260:13:MX_DMA_Init	1
+../Core/Src/main.c:278:13:MX_GPIO_Init	1
+../Core/Src/main.c:310:6:Error_Handler	1
