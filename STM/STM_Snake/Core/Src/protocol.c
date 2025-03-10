@@ -88,22 +88,18 @@ uint16_t encode_frame_end(const uint8_t *payload, uint8_t payload_len, uint8_t *
 int decode_frame(const uint8_t *frame, uint8_t frame_len) {
 	// Кадр занадто короткий
     if (frame_len < 5){
-    	return -1;
+    	return 1;
     }
     // Невірний стартовий байт
     if (frame[0] != START_BYTE){
-    		return -2;
+    		return 2;
     }
 
     uint8_t cmd_byte = frame[1];
    	uint8_t payload = frame[2];
-   	// Невідповідність довжини кадру
-   	if (frame_len != 5) {
-    			return -3;
-    }
 
     uint16_t received_crc = (frame[3] << 8) | frame[4];				// Отримання переданого CRC
     uint16_t computed_crc = crc16_ccitt(&frame[2], 1, cmd_byte);    // Обчислення CRC на основі PAYLOAD
-    return (received_crc == computed_crc) ? 0 : -4;
+    return (received_crc == computed_crc) ? 0 : 4;
 }
 

@@ -270,12 +270,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 			uint8_t test_receive = decode_frame(frame,sizeof(frame));
     		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
-    		if  (test_receive!=0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
+    		if  (test_receive == 4) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
     		if  (test_receive==0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
-    		if  (test_receive!=0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+
     		break;
 
-    		case(2):
+    		case(3):
 
 
     	}
