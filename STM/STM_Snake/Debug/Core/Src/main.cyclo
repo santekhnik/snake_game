@@ -1,7 +1,8 @@
-../Core/Src/main.c:69:5:main	1
-../Core/Src/main.c:115:6:SystemClock_Config	4
-../Core/Src/main.c:160:13:MX_USART1_UART_Init	2
-../Core/Src/main.c:193:13:MX_DMA_Init	1
-../Core/Src/main.c:211:13:MX_GPIO_Init	1
-../Core/Src/main.c:237:6:HAL_UART_RxCpltCallback	2
-../Core/Src/main.c:250:6:Error_Handler	1
+../Core/Src/main.c:72:6:simulate_snake_game	1
+../Core/Src/main.c:86:5:main	1
+../Core/Src/main.c:141:6:SystemClock_Config	4
+../Core/Src/main.c:187:13:MX_USART1_UART_Init	2
+../Core/Src/main.c:220:13:MX_DMA_Init	1
+../Core/Src/main.c:238:13:MX_GPIO_Init	1
+../Core/Src/main.c:264:6:HAL_UART_RxCpltCallback	5
+../Core/Src/main.c:291:6:Error_Handler	1

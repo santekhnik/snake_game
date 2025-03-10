@@ -17,11 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "protocol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,8 +45,9 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
+uint8_t tx_buffer[128];// чому ми видалили tx_buffer?
+uint8_t frame[5]; //от фрейм хай буде
 
-uint8_t rxdata[7];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,12 +56,27 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void simulate_snake_game();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+//HAL_UART_Receive(&huart1, )
+
+
+
+
+
+
+void simulate_snake_game() {
+    uint8_t frog_x = 20, frog_y = 25;
+    uint8_t payload[8] = {10,15,11,15,12,15,13,15};
+
+    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
+
+    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
+}
 /* USER CODE END 0 */
 
 /**
@@ -78,6 +95,7 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -94,13 +112,21 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_DMA(&huart1,rxdata,sizeof(rxdata));
+  HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
+  //simulate_snake_game();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //simulate_snake_game();
+
+      //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+
+      //uint8_t test_receive = decode_frame(frame,sizeof(frame));
+     // HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -131,6 +157,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
@@ -236,11 +263,25 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        HAL_UART_Transmit(&huart1, rxdata, sizeof(rxdata), 100);
-        HAL_UART_Receive_DMA(&huart1, rxdata, sizeof(rxdata));
+
+    	uint8_t handler_prot = frame[1];
+    	switch(handler_prot){
+    		case(1):
+
+			uint8_t test_receive = decode_frame(frame,sizeof(frame));
+    		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
+    		if  (test_receive == 4) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
+    		if  (test_receive==0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+
+    		break;
+
+    		case(3):
+
+
+    	}
+    	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
-
 /* USER CODE END 4 */
 
 /**
@@ -266,7 +307,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t *file,  uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
