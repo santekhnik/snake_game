@@ -45,8 +45,9 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
+uint8_t tx_buffer[128];// чому ми видалили tx_buffer?
+uint8_t frame[5]; //от фрейм хай буде
 
-uint8_t frame[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,6 +61,14 @@ void simulate_snake_game();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//HAL_UART_Receive(&huart1, )
+
+
+
+
+
+
 void simulate_snake_game() {
     uint8_t frog_x = 20, frog_y = 25;
     uint8_t payload[8] = {10,15,11,15,12,15,13,15};
@@ -104,7 +113,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
-  simulate_snake_game();
+  //simulate_snake_game();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,14 +121,11 @@ int main(void)
   while (1)
   {
 	  //simulate_snake_game();
-	  uint8_t frame[5]={0x7E,0x01,0x01,0xE1,0xF0};
+
       //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
 
-      uint8_t test_receive = decode_frame(frame,sizeof(frame));
-      HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
-      if  (test_receive==0){
-      HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);
-      }
+      //uint8_t test_receive = decode_frame(frame,sizeof(frame));
+     // HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
 
     /* USER CODE END WHILE */
 
@@ -258,18 +264,23 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
+    	uint8_t handler_prot = frame[1];
+    	switch(handler_prot){
+    		case(1):
+
+			uint8_t test_receive = decode_frame(frame,sizeof(frame));
+    		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
+    		if  (test_receive!=0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
+    		if  (test_receive==0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+    		if  (test_receive!=0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+    		break;
+
+    		case(2):
 
 
-
-        simulate_snake_game();
-
-        HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
-        int8_t test_receive = decode_frame(frame,5);
-        HAL_UART_Transmit(&huart1, test_receive, 1, 100);
-        if  (test_receive==0){
-        HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,GPIO_PIN_SET);
-        }
-}
+    	}
+    	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+    }
 }
 /* USER CODE END 4 */
 
