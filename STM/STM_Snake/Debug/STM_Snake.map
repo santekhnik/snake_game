@@ -154,8 +154,7 @@ Discarded input sections
  .bss.apple_y   0x00000000        0x1 ./Core/Src/SnakeLogic.o
  .bss.body_x    0x00000000       0x64 ./Core/Src/SnakeLogic.o
  .bss.body_y    0x00000000       0x64 ./Core/Src/SnakeLogic.o
- .text.move_snake
-                0x00000000      0x1fc ./Core/Src/SnakeLogic.o
+ .text.snake    0x00000000      0x1fc ./Core/Src/SnakeLogic.o
  .debug_info    0x00000000      0x1c9 ./Core/Src/SnakeLogic.o
  .debug_abbrev  0x00000000      0x118 ./Core/Src/SnakeLogic.o
  .debug_aranges
@@ -204,7 +203,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x3e ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000      0x114 ./Core/Src/SnakeLogic.o
  .debug_line    0x00000000      0x864 ./Core/Src/SnakeLogic.o
- .debug_str     0x00000000    0x6a345 ./Core/Src/SnakeLogic.o
+ .debug_str     0x00000000    0x6a340 ./Core/Src/SnakeLogic.o
  .comment       0x00000000       0x44 ./Core/Src/SnakeLogic.o
  .debug_frame   0x00000000       0x34 ./Core/Src/SnakeLogic.o
  .ARM.attributes

@@ -9,7 +9,7 @@ uint8_t body_y[100];
 
 
 /* Функція руху змійки */
-uint8_t move_snake(uint8_t command) {
+uint8_t snake(uint8_t command) {
 
     if (body_x[0] == apple_x && body_y[0] == apple_y) {
         length++;
