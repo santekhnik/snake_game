@@ -1,3 +1,1 @@
-../Core/Src/SnakeLogic.c:22:6:send_coordinates	2
-../Core/Src/SnakeLogic.c:37:6:move_snake	10
-../Core/Src/SnakeLogic.c:72:6:send_payload_arrays	2
+../Core/Src/SnakeLogic.c:12:10:snake	11
