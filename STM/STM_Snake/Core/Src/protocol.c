@@ -79,7 +79,7 @@ uint16_t encode_frame_end(const uint8_t *payload, uint8_t payload_len, uint8_t *
 	tx_buffer[0] = START_BYTE;                  				// Початковий байт
 	tx_buffer[1] = cmd_byte;                    				// Байт комади
     memcpy(&tx_buffer[2], payload, payload_len);				// копіюємо пейлоад
-    uint16_t crc = crc16_ccitt(payload, 1, cmd_byte);    		// Додавання CRC (старший байт перший)
+    uint16_t crc = crc16_ccitt(payload, 1, cmd_byte);    	// Додавання CRC (старший байт перший)
     tx_buffer[3 + payload_len] = (crc >> 8) & 0xFF; 			// crc high
     tx_buffer[4 + payload_len] = crc & 0xFF;        			// crc low
     return 5;
