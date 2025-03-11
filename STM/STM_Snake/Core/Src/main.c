@@ -314,13 +314,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     	switch(handler_prot){
     		case(1 ):
 
+<<<<<<< Updated upstream
 			uint8_t test_receive = decode_frame(frame,sizeof(frame));
     		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
 
     		break;
 
+=======
+>>>>>>> Stashed changes
     		case(3):
-
+			uint8_t command = frame[2];
+    		break;
 
     	}
     	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
