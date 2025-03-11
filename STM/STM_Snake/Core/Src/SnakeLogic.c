@@ -1,40 +1,15 @@
 #include "main.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
-
-
-
-extern UART_HandleTypeDef huart1;
-uint8_t length,x, y = 0;
+uint8_t length,x, y = 1;
 uint8_t command = 4;
 uint8_t apple_x, apple_y;
 uint8_t body_x[100];
 uint8_t body_y[100];
 
 
-void move_snake(uint8_t command);
-void send_coordinates();
-void spawn_apple();
-
-
-void send_coordinates() {
-    char buffer[200];
-    int len = sprintf(buffer, "H:%d,%d A:%d,%d L:%d B:", x, y, apple_x, apple_y, length);
-
-    for (int i = 0; i < length; i++) {
-        len += sprintf(buffer + len, "(%d,%d) ", body_x[i], body_y[i]);
-    }
-
-    strcat(buffer, "\r\n");
-    HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
-}
-
-
 
 /* Функція руху змійки */
-void move_snake(uint8_t command) {
+uint8_t move_snake(uint8_t command) {
 
     if (body_x[0] == apple_x && body_y[0] == apple_y) {
         length++;
@@ -64,12 +39,8 @@ case 4:
     break;
 default:
 
-    break;
+    break;}
 
-}
-}
-
-void send_payload_arrays(uint8_t *body_x, uint8_t *body_y, uint8_t length) {
     uint8_t payload[length * 2];  // Масив для об'єднаних даних
 
     for (uint8_t i = 0; i < length; i++) {
