@@ -1,3 +1,4 @@
+"./Core/Src/SnakeLogic.o"
 "./Core/Src/main.o"
 "./Core/Src/protocol.o"
 "./Core/Src/stm32f0xx_hal_msp.o"

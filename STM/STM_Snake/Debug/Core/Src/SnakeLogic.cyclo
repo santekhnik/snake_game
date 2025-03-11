@@ -1,0 +1,3 @@
+../Core/Src/SnakeLogic.c:28:6:send_coordinates	2
+../Core/Src/SnakeLogic.c:41:6:spawn_apple	1
+../Core/Src/SnakeLogic.c:47:6:move_snake	10
