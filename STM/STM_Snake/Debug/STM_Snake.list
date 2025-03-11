@@ -356,7 +356,6 @@ void SystemClock_Config(void)
  80002ba:	f000 f91b 	bl	80004f4 <Error_Handler>
   }
 
-
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK

@@ -1,3 +1,3 @@
-../Core/Src/SnakeLogic.c:28:6:send_coordinates	248	static
-../Core/Src/SnakeLogic.c:41:6:spawn_apple	8	static
-../Core/Src/SnakeLogic.c:47:6:move_snake	24	static
+../Core/Src/SnakeLogic.c:22:6:send_coordinates	248	static
+../Core/Src/SnakeLogic.c:37:6:move_snake	24	static
+../Core/Src/SnakeLogic.c:72:6:send_payload_arrays	72	dynamic

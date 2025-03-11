@@ -174,29 +174,28 @@ Discarded input sections
  .text          0x00000000        0x0 ./Core/Src/SnakeLogic.o
  .data          0x00000000        0x0 ./Core/Src/SnakeLogic.o
  .bss           0x00000000        0x0 ./Core/Src/SnakeLogic.o
- .bss.rxdata    0x00000000        0x1 ./Core/Src/SnakeLogic.o
- .bss.x         0x00000000        0x4 ./Core/Src/SnakeLogic.o
- .bss.y         0x00000000        0x4 ./Core/Src/SnakeLogic.o
+ .bss.length    0x00000000        0x1 ./Core/Src/SnakeLogic.o
+ .bss.x         0x00000000        0x1 ./Core/Src/SnakeLogic.o
+ .bss.y         0x00000000        0x1 ./Core/Src/SnakeLogic.o
  .data.command  0x00000000        0x1 ./Core/Src/SnakeLogic.o
- .data.length   0x00000000        0x4 ./Core/Src/SnakeLogic.o
- .bss.apple_x   0x00000000        0x4 ./Core/Src/SnakeLogic.o
- .bss.apple_y   0x00000000        0x4 ./Core/Src/SnakeLogic.o
- .bss.body_x    0x00000000      0x190 ./Core/Src/SnakeLogic.o
- .bss.body_y    0x00000000       0x28 ./Core/Src/SnakeLogic.o
+ .bss.apple_x   0x00000000        0x1 ./Core/Src/SnakeLogic.o
+ .bss.apple_y   0x00000000        0x1 ./Core/Src/SnakeLogic.o
+ .bss.body_x    0x00000000       0x64 ./Core/Src/SnakeLogic.o
+ .bss.body_y    0x00000000       0x64 ./Core/Src/SnakeLogic.o
  .rodata        0x00000000       0x27 ./Core/Src/SnakeLogic.o
  .text.send_coordinates
-                0x00000000       0xf8 ./Core/Src/SnakeLogic.o
- .text.spawn_apple
-                0x00000000       0x40 ./Core/Src/SnakeLogic.o
+                0x00000000      0x100 ./Core/Src/SnakeLogic.o
  .text.move_snake
-                0x00000000       0xd0 ./Core/Src/SnakeLogic.o
- .debug_info    0x00000000      0x843 ./Core/Src/SnakeLogic.o
- .debug_abbrev  0x00000000      0x239 ./Core/Src/SnakeLogic.o
+                0x00000000      0x13c ./Core/Src/SnakeLogic.o
+ .text.send_payload_arrays
+                0x00000000       0xd4 ./Core/Src/SnakeLogic.o
+ .debug_info    0x00000000      0x887 ./Core/Src/SnakeLogic.o
+ .debug_abbrev  0x00000000      0x248 ./Core/Src/SnakeLogic.o
  .debug_aranges
                 0x00000000       0x30 ./Core/Src/SnakeLogic.o
  .debug_rnglists
-                0x00000000       0x21 ./Core/Src/SnakeLogic.o
- .debug_macro   0x00000000      0x2fa ./Core/Src/SnakeLogic.o
+                0x00000000       0x22 ./Core/Src/SnakeLogic.o
+ .debug_macro   0x00000000      0x2f4 ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000      0xa8a ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000      0x12d ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000       0x2e ./Core/Src/SnakeLogic.o
@@ -259,10 +258,10 @@ Discarded input sections
  .debug_macro   0x00000000       0x16 ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000       0x16 ./Core/Src/SnakeLogic.o
  .debug_macro   0x00000000       0x29 ./Core/Src/SnakeLogic.o
- .debug_line    0x00000000      0x9c2 ./Core/Src/SnakeLogic.o
- .debug_str     0x00000000    0x67143 ./Core/Src/SnakeLogic.o
+ .debug_line    0x00000000      0xa47 ./Core/Src/SnakeLogic.o
+ .debug_str     0x00000000    0x6713d ./Core/Src/SnakeLogic.o
  .comment       0x00000000       0x44 ./Core/Src/SnakeLogic.o
- .debug_frame   0x00000000       0x74 ./Core/Src/SnakeLogic.o
+ .debug_frame   0x00000000       0x7c ./Core/Src/SnakeLogic.o
  .ARM.attributes
                 0x00000000       0x2c ./Core/Src/SnakeLogic.o
  .group         0x00000000        0xc ./Core/Src/main.o
