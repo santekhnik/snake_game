@@ -40,13 +40,14 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
-uint8_t tx_buffer[128];// чому ми видалили tx_buffer?
-uint8_t frame[5]; //от фрейм хай буде
-
+uint8_t tx_buffer[128];
+uint8_t frame[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,6 +55,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 void simulate_snake_game();
 /* USER CODE END PFP */
@@ -109,7 +111,9 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim2);
   HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
   //simulate_snake_game();
   /* USER CODE END 2 */
@@ -174,6 +178,51 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 6999;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 10000;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
 }
 
 /**
@@ -267,8 +316,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 			uint8_t test_receive = decode_frame(frame,sizeof(frame));
     		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
-    		if  (test_receive == 4) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
-    		if  (test_receive==0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
 
     		break;
 
@@ -277,6 +324,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     	}
     	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+    }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == TIM2) {
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // Приклад: мигає світлодіод на PC8
     }
 }
 /* USER CODE END 4 */
