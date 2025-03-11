@@ -201,7 +201,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 6999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 10000;
+  htim2.Init.Period = 6856;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -312,7 +312,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     	uint8_t handler_prot = frame[1];
     	switch(handler_prot){
-    		case(1):
+    		case(1 ):
 
 			uint8_t test_receive = decode_frame(frame,sizeof(frame));
     		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
@@ -329,9 +329,21 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // Приклад: мигає світлодіод на PC8
+
+    	uint8_t is = 4;
+    	if (is == 5){
+    	HAL_TIM_Base_Stop_IT(&htim2);  // Зупиняємо таймер
+    	}
+
+
+        if (is == 4){
+        	HAL_TIM_Base_Start_IT(&htim2);  // Зупиняємо таймер
+            	} // Запускаємо таймер знову
+
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
     }
 }
+
 /* USER CODE END 4 */
 
 /**

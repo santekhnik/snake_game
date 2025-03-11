@@ -65,7 +65,7 @@ uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t 
 uint16_t encode_frame_err(const uint8_t *payload, uint8_t *tx_buffer, uint8_t cmd_byte) {
 	tx_buffer[0] = START_BYTE;
 	tx_buffer[1] = cmd_byte;
-    // Очікуємо, що payload містить рівно 2 байти
+    // Очікуємо, що payload містить рівн о 2 байти
     memcpy(&tx_buffer[2], payload, 2);
     uint16_t crc = crc16_ccitt(payload, 2, cmd_byte);
     tx_buffer[4] = (crc >> 8) & 0xFF;
