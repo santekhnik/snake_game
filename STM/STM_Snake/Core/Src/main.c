@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "protocol.h"
+#include "SnakeLogic.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +49,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 /* USER CODE BEGIN PV */
 uint8_t tx_buffer[128];
 uint8_t frame[5];
+uint8_t frog_x,frog_y;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,27 +59,28 @@ static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
-void simulate_snake_game();
+//void simulate_snake_game();
+uint8_t randomize_apple();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+uint8_t randomize_apple(){
+	frog_x = rand() % 10;
+	frog_y = rand() % 10;
+}
+
 //HAL_UART_Receive(&huart1, )
 
-
-
-
-
-
-void simulate_snake_game() {
+/*void simulate_snake_game() {
     uint8_t frog_x = 20, frog_y = 25;
     uint8_t payload[8] = {10,15,11,15,12,15,13,15};
 
     uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
 
     HAL_UART_Transmit(&huart1, frame, frame_length, 100);
-}
+}*/
 /* USER CODE END 0 */
 
 /**
@@ -320,6 +323,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		break;
 
     		case(3):
+
+			uint8_t command = frame[2];
+		    uint8_t payload = move_snake(command,frog_x,frog_y);
+		    uint8_t frame_length = encode_frame_snake(payload, sizeof(frame)+2, frame, 0x02, frog_x, frog_y);
+		    HAL_UART_Transmit(&huart1,tx_buffer, sizeof(tx_buffer), 100);
+
+
 
 
     	}
