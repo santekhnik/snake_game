@@ -1,0 +1,6 @@
+../Core/Src/protocol.c:11:10:crc16_ccitt_snake	20	static
+../Core/Src/protocol.c:27:10:crc16_ccitt	20	static
+../Core/Src/protocol.c:43:9:encode_frame_snake	40	static
+../Core/Src/protocol.c:65:10:encode_frame_err	24	static
+../Core/Src/protocol.c:78:10:encode_frame_end	24	static
+../Core/Src/protocol.c:88:5:decode_frame	8	static

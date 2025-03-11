@@ -8,13 +8,16 @@ uint8_t body_y[100];
 
 
 
-/* Функція руху змійки */
-uint8_t move_snake(uint8_t command) {
 
-    if (body_x[0] == apple_x && body_y[0] == apple_y) {
+
+
+
+/* Функція руху змійки */
+uint8_t move_snake(uint8_t command,uint8_t frog_x, uint8_t frog_y) {
+
+    if (body_x[0] == frog_x && body_y[0] == frog_y) {
         length++;
-        apple_x = rand() % 10;
-        apple_y = rand() % 10;
+        randomize_apple();
     }
     for (int i = length; i > 0; i--) {
         body_x[i] = body_x[i - 1];
