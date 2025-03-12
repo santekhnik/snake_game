@@ -2,7 +2,7 @@
 
 uint8_t length,x, y = 1;
 uint8_t command = 4;
-uint8_t apple_x, apple_y;
+
 uint8_t body_x[100];
 uint8_t body_y[100];
 

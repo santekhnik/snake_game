@@ -67,8 +67,7 @@ uint8_t randomize_apple();
 /* USER CODE BEGIN 0 */
 
 uint8_t randomize_apple(){
-	//frog_x = rand() % 10;
-	frog_x= 0x20;
+	frog_x = rand() % 10;
 	frog_y = rand() % 10;
 }
 
@@ -329,11 +328,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     		case(3):
 
-		uint8_t command = frame[2];
 
-		      uint8_t payload = move_snake(command, frog_x, frog_y);
-		      uint8_t frame_length = encode_frame_snake(payload, sizeof(payload+1), tx_buffer, 0x02, frog_x, frog_y);
-		      HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+
 		      break;
 
     	}
@@ -341,22 +337,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     }
 }
 
-/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
+    	uint8_t command = frame[2];
 
-    	uint8_t is = 4;
-    	if (is == 5){
-    	HAL_TIM_Base_Stop_IT(&htim2);  // Зупиняємо таймер
-    	}
+    	uint8_t payload = move_snake(command, frog_x, frog_y);
+    	uint8_t frame_length = encode_frame_snake(payload, sizeof(payload+1), tx_buffer, 0x02, frog_x, frog_y);
+        HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
 
-
-        if (is == 4){
-        	HAL_TIM_Base_Start_IT(&htim2);  // Зупиняємо таймер
-            	} // Запускаємо таймер знову
-
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
     }
-}*/
+}
 
 /* USER CODE END 4 */
 
