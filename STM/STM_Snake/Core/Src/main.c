@@ -48,7 +48,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 uint8_t tx_buffer[128];
-uint8_t frame[5];
+uint8_t rx_buffer[5];
 uint8_t frog_x,frog_y;
 /* USER CODE END PV */
 
@@ -68,7 +68,6 @@ uint8_t randomize_apple();
 
 uint8_t randomize_apple(){
 	//frog_x = rand() % 10;
-	frog_x= 0x20;
 	frog_y = rand() % 10;
 }
 
@@ -78,9 +77,9 @@ uint8_t randomize_apple(){
     uint8_t frog_x = 20, frog_y = 25;
     uint8_t payload[8] = {10,15,11,15,12,15,13,15};
 
-    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
+    uint8_t frame_length = encode_frame_snake(payload, 6, rx_buffer, 0x02, frog_x, frog_y);
 
-    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
+    HAL_UART_Transmit(&huart1, rx_buffer, frame_length, 100);
 }*/
 /* USER CODE END 0 */
 
@@ -118,7 +117,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
+  HAL_UART_Receive_DMA(&huart1,rx_buffer,sizeof(rx_buffer));
   //simulate_snake_game();
   /* USER CODE END 2 */
 
@@ -128,9 +127,9 @@ int main(void)
   {
 	  //simulate_snake_game();
 
-      //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+      //HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
-      //uint8_t test_receive = decode_frame(frame,sizeof(frame));
+      //uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
      // HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
 
     /* USER CODE END WHILE */
@@ -314,13 +313,13 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
-    //	uint8_t handler_prot = frame[1];
+    //	uint8_t handler_prot = rx_buffer[1];
     	uint8_t handler_prot=3;
     	switch(handler_prot){
     		case(1):
 
-			uint8_t test_receive = decode_frame(frame,sizeof(frame));
-    		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
+			uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
+    		HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);
     		if (test_receive==0) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
     		if (test_receive==4) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,GPIO_PIN_SET);
     		//HAL_UART_Transmit(&huart1, &test_receive,1, 100);
@@ -329,7 +328,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     		case(3):
 
-		uint8_t command = frame[2];
+		uint8_t command = rx_buffer[2];
 
 		      uint8_t payload = move_snake(command, frog_x, frog_y);
 		      uint8_t frame_length = encode_frame_snake(payload, sizeof(payload+1), tx_buffer, 0x02, frog_x, frog_y);
@@ -337,26 +336,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		      break;
 
     	}
-    	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+    	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
     }
 }
 
-/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
+    	uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
 
-    	uint8_t is = 4;
-    	if (is == 5){
-    	HAL_TIM_Base_Stop_IT(&htim2);  // Зупиняємо таймер
-    	}
-
-
-        if (is == 4){
-        	HAL_TIM_Base_Start_IT(&htim2);  // Зупиняємо таймер
-            	} // Запускаємо таймер знову
-
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
     }
-}*/
+}
 
 /* USER CODE END 4 */
 
