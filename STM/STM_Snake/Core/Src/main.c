@@ -328,7 +328,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
     //	uint8_t handler_prot = rx_buffer[1];
-    	uint8_t handler_prot=3;
+    	uint8_t handler_prot = rx_buffer[1];
     	switch(handler_prot){
     		case(1):
 
@@ -345,7 +345,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		uint8_t command = rx_buffer[2];
 
 		      uint8_t payload = move_snake(command, *frog_x, *frog_y);
-		      uint8_t frame_length = encode_frame_snake(payload, sizeof(payload+1), tx_buffer, 0x02, frog_x, frog_y);
+		      uint8_t frame_length = encode_frame_snake(payload, sizeof(payload)+1, tx_buffer, 0x02, frog_x, frog_y);
 		      HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
 		      break;
 
