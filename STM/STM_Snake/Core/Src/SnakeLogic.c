@@ -1,16 +1,10 @@
 #include "main.h"
 
-uint8_t length,x, y = 1;
-uint8_t command = 4;
-uint8_t apple_x, apple_y;
-uint8_t body_x[100];
-uint8_t body_y[100];
 
-
-
-
-
-
+uint8_t x, y = 1;
+uint8_t body_x[128];			//массив значень координат X змійки
+uint8_t body_y[128];			//массив значень координат Y змійки
+uint8_t length;					//значення довжини змійки
 
 /* Функція руху змійки */
 uint8_t move_snake(uint8_t command,uint8_t frog_x, uint8_t frog_y) {
