@@ -23,7 +23,8 @@ class STMProtocol:
         """
         Декодує отриманий HEX-пакет, перевіряє CRC та повертає дані.
         """
-        frame = bytes.fromhex(hex_str)
+        frame = hex_str
+        print(frame)
 
         if len(frame) < 5:
             return {"status": "error", "message": "Короткий пакет"}
