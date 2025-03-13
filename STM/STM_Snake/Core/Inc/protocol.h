@@ -47,6 +47,6 @@ uint16_t encode_frame_err(const uint8_t *payload, uint8_t *frame, uint8_t cmd_by
 uint16_t encode_frame_end(const uint8_t *payload, uint8_t *frame, uint8_t cmd_byte);
 
 // Функція розкодування пакету. Повертає 0, якщо все гаразд, або код помилки.
-int decode_frame(const uint8_t *frame, uint8_t frame_len);
+uint8_t decode_frame(const uint8_t *frame, uint8_t frame_len);
 
 #endif

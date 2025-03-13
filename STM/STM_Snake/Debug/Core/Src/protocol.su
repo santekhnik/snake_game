@@ -3,4 +3,4 @@
 ../Core/Src/protocol.c:42:9:encode_frame_snake	56	static
 ../Core/Src/protocol.c:64:10:encode_frame_err	40	static
 ../Core/Src/protocol.c:76:10:encode_frame_end	40	static
-../Core/Src/protocol.c:86:5:decode_frame	40	static
+../Core/Src/protocol.c:86:9:decode_frame	40	static
