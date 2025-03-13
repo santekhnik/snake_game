@@ -97,8 +97,9 @@ int decode_frame(const uint8_t *frame, uint8_t frame_len) {
     uint8_t cmd_byte = frame[1];
    	uint8_t payload = frame[2];
 
-    uint16_t received_crc = (frame[3] << 8) | frame[4];				// Отримання переданого CRC
-    uint16_t computed_crc = crc16_ccitt(&frame[2], 1, cmd_byte);    // Обчислення CRC на основі PAYLOAD
+    uint16_t received_crc = (frame[3] << 8) | frame[4];
+
+    uint16_t computed_crc = crc16_ccitt(&frame[2], 1, cmd_byte);
     return (received_crc == computed_crc) ? 0 : 4;
 }
 

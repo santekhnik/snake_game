@@ -1,8 +1,8 @@
 #include "SnakeLogic.h"
 #include <stdint.h>
 
-uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload){
-
+uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload)
+{
     static uint8_t snake_length = 4;
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
     static uint8_t y_buffer[128] = {15, 15, 15, 15};
@@ -12,7 +12,7 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
         y_buffer[i] = y_buffer[i - 1];
     }
 
-    //от я просто хочу здохнути від вашого програмування бляха
+
     switch (command) {
         case 1: y_buffer[0]--; break;
         case 2: y_buffer[0]++; break;

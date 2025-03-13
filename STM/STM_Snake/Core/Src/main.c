@@ -131,7 +131,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
+
   HAL_UART_Receive_DMA(&huart1,rx_buffer,sizeof(rx_buffer));
   //simulate_snake_game();
   /* USER CODE END 2 */
@@ -328,16 +328,24 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
-    //	uint8_t handler_prot = rx_buffer[1];
-    	uint8_t handler_prot=3;
-    	switch(handler_prot){
+    	uint8_t cmd_code = rx_buffer[1];
+    	uint8_t second_byte = rx_buffer[2];
+    	switch(cmd_code){
     		case(1):
 
-			uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
-    		HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);
-    		if (test_receive==0) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
-    		if (test_receive==4) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,GPIO_PIN_SET);
-    		//HAL_UART_Transmit(&huart1, &test_receive,1, 100);
+
+			uint8_t Decoder_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
+    		/*HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);*/
+
+    		if (Decoder_receive==0 && second_byte == 1) {
+
+    			uint8_t response[5] = {0x7E,0x01,0x32,0xE7,0xC0};
+    		    HAL_UART_Transmit(&huart1, &response, 10, 100);
+    			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
+    			HAL_TIM_Base_Start_IT(&htim2);
+    		}
+    		if (Decoder_receive==4) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,GPIO_PIN_SET);
+
 
     		break;
 
@@ -349,8 +357,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     	}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
     }
-}
 
+}
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
