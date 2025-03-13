@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define GAME_OVER_CMD 0x03
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -64,6 +64,9 @@ uint8_t *frog_x;				//"жабка" X або яблуко, виокристову
 uint8_t *frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
 uint8_t *x_buffer[128];			//массив значень координат X змійки
 uint8_t *y_buffer[128];			//массив значень координат Y змійки
+
+//завершення логіки гри
+uint8_t game_over_flag = 0;
 
 /* USER CODE END PV */
 
@@ -325,9 +328,22 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
+void game_over(){ //надсилання пакету через UART
+	 uint8_t frame_length = encode_frame_snake(NULL, 0, tx_buffer, GAME_OVER_CMD, 0, 0);
+	 HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+}
+
+
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
+    	 uint8_t result = decode_frame(rx_buffer, sizeof(rx_buffer));
+
+    	 if(result == 100){ //код для завершення гри
+    		 game_over();
+    		 HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET); // індикація коли гра завершенна
+
+    	 }
 
     //	uint8_t handler_prot = rx_buffer[1];
     	uint8_t handler_prot=3;
@@ -343,10 +359,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		break;
 
     		case(3):
-
-
-
-
     	}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
     }
@@ -358,6 +370,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         time_count++;
 
         if (time_count >= 3) {
+
+        	if(game_over_flag) return; //зупинимо гру коли вона завершення
 
             uint8_t command = 3;
             move_snake(command, *frog_x, *frog_y, payload);
@@ -371,7 +385,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         }
     }
 }
-
 /* USER CODE END 4 */
 
 /**
