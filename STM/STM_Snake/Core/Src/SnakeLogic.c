@@ -3,7 +3,7 @@
 
 uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload){
 
-    static uint8_t snake_length = 4;
+    static uint8_t snake_length = 4;						//початкові координати і довжина змійки
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
     static uint8_t y_buffer[128] = {15, 15, 15, 15};
 
@@ -12,9 +12,9 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
         y_buffer[i] = y_buffer[i - 1];
     }
 
-    //от я просто хочу здохнути від вашого програмування бляха
+    //same bro
     switch (command) {
-        case 1: y_buffer[0]--; break;
+        case 1: y_buffer[0]--; break;						//реалізація кнопок управління
         case 2: y_buffer[0]++; break;
         case 3: x_buffer[0]--; break;
         case 4: x_buffer[0]++; break;
@@ -22,13 +22,13 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
     }
 
 
-    if (x_buffer[0] == frog_x && y_buffer[0] == frog_y) {
+    if (x_buffer[0] == frog_x && y_buffer[0] == frog_y) {	//перевірка на з'їдене яблуко
         snake_length++;
         if (snake_length > 128) snake_length = 128;
     }
 
 
-    for (int i = 0; i < snake_length; i++) {
+    for (int i = 0; i < snake_length; i++) {  				//функція створення масиву корисної інформації
         payload[2 * i] = x_buffer[i];
         payload[2 * i + 1] = y_buffer[i];
     }
