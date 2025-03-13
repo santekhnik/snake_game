@@ -8,6 +8,6 @@
 #ifndef INC_SNAKELOGIC_H_
 #define INC_SNAKELOGIC_H_
 
-uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload);
+void move_snake(uint8_t command, uint8_t *payload, uint8_t *frog_x, uint8_t *frog_y);
 
 #endif /* INC_SNAKELOGIC_H_ */

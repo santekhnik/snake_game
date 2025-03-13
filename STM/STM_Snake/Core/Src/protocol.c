@@ -2,15 +2,16 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <protocol.h>
+#include <SnakeLogic.h>
 
 
 
 // Функція обчислення CRC-16-CCITT для пакету змійки (поліном 0x1021, початкове значення 0xFFFF)
 // Обчислення CRC-16-CCITT для пакету змійки
-uint16_t crc16_ccitt_snake(const uint8_t *data, uint8_t len, uint8_t cmd, uint8_t frog_x, uint8_t frog_y) {
-    uint16_t crc = 0xFFFF;
+uint16_t crc16_ccitt_snake(const uint8_t *data, uint8_t len, uint8_t cmd, uint8_t *frog_x, uint8_t *frog_y) {
+    uint16_t crc = 0xFFFF;//
     crc ^= ((uint16_t)cmd << 8);
-    crc ^= (((uint16_t)frog_x << 8) | frog_y);
+    crc ^= (((uint16_t)*frog_x << 8) | *frog_y);
     for (uint16_t i = 0; i < len; i++) {
         crc ^= ((uint16_t)data[i] << 8);
         for (uint8_t j = 0; j < 8; j++) {
@@ -39,7 +40,7 @@ uint16_t crc16_ccitt(const uint8_t *data, uint16_t len, uint8_t cmd) {
 }
 
 //функція кодування пакету змії
-uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *tx_buffer, uint8_t cmd_byte, uint8_t frog_x, uint8_t frog_y) {
+uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t *tx_buffer, uint8_t cmd_byte, uint8_t *frog_x, uint8_t *frog_y) {
 
 	tx_buffer[0] = START_BYTE;
 	tx_buffer[1] = cmd_byte;
@@ -49,10 +50,10 @@ uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t 
     tx_buffer[3 + i] = payload[i];
     }
 
-    tx_buffer[3 + payload_len] = frog_x;
-    tx_buffer[4 + payload_len] = frog_y;
+    tx_buffer[3 + payload_len] = *frog_x;
+    tx_buffer[4 + payload_len] = *frog_y;
 
-   uint16_t crc = crc16_ccitt_snake(payload, payload_len, cmd_byte, frog_x, frog_y);
+   uint16_t crc = crc16_ccitt_snake(payload, payload_len, cmd_byte, *frog_x, *frog_y);
    	tx_buffer[5 + payload_len] = (crc >> 8) & 0xFF;
     tx_buffer[6 + payload_len] = crc & 0xFF;
 
