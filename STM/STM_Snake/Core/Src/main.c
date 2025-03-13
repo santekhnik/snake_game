@@ -351,7 +351,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
         if (time_count >= 3) {
 
-            uint8_t command = 4;
+            uint8_t command = 3;
             move_snake(command, payload,&frog_y,&frog_y);
             uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, frog_x, frog_y);
 
