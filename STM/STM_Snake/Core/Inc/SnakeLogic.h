@@ -12,10 +12,11 @@ void send_preload_arrays(uint8_t *body_x, uint8_t *body_y, uint8_t length);
 
 void spawn_apple();
 
-uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload);
+uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload);
+
 
 void send_coordinates();
 
 
-uint8_t randomize_apple();
+void randomize_apple();
 #endif /* INC_SNAKELOGIC_H_ */

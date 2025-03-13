@@ -56,14 +56,13 @@ uint8_t rx_buffer[5];			//буфер повідомлень на прийман�
 uint8_t *payload_len;			//довжина корисного навантаження в пакеті "змійки"
 uint8_t payload[256];			//корисна інформація в пакеті "змійки"
 uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
-uint8_t command = 4;			//значення кнопки, що натискається на PC
+uint8_t second_byte;     		//значення кнопки, що натискається на PC
 uint8_t time_count;
 
 //Змінні логіки гри
-uint8_t *frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
-uint8_t *frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
-uint8_t *x_buffer[128];			//массив значень координат X змійки
-uint8_t *y_buffer[128];			//массив значень координат Y змійки
+uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
+uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
+
 
 /* USER CODE END PV */
 
@@ -75,16 +74,13 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 //void simulate_snake_game();
-uint8_t randomize_apple();
+void randomize_apple();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint8_t randomize_apple(){
-	//frog_x = rand() % 10;
-	return *frog_y = rand() % 10;
-}
+
 
 //HAL_UART_Receive(&huart1, )
 
@@ -133,6 +129,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_UART_Receive_DMA(&huart1,rx_buffer,sizeof(rx_buffer));
+  randomize_apple(&frog_x, &frog_y);
+
   //simulate_snake_game();
   /* USER CODE END 2 */
 
@@ -329,20 +327,22 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
     	uint8_t cmd_code = rx_buffer[1];
-    	uint8_t second_byte = rx_buffer[2];
+    	second_byte = rx_buffer[2];
     	switch(cmd_code){
     		case(1):
 
 
 			uint8_t Decoder_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
-    		/*HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);*/
+    		//HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);
 
     		if (Decoder_receive==0 && second_byte == 1) {
-
-    			uint8_t response[5] = {0x7E,0x01,0x32,0xE7,0xC0};
-    		    HAL_UART_Transmit(&huart1, &response, 10, 100);
+    			second_byte=4;
+    			uint8_t response[5] = {0x7E,0x01,0x02,0xD1,0x93};
+    		    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
     			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
     			HAL_TIM_Base_Start_IT(&htim2);
+
+
     		}
     		if (Decoder_receive==4) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,GPIO_PIN_SET);
 
@@ -350,7 +350,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		break;
 
     		case(3):
-
 
 
 
@@ -365,11 +364,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         time_count++;
 
         if (time_count >= 3) {
-
-            uint8_t command = 3;
-            move_snake(command, *frog_x, *frog_y, payload);
-
-            uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, *frog_x, *frog_y);
+        	move_snake(second_byte, &frog_x, &frog_y, payload);
+            uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, frog_x, frog_y);
 
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
 
