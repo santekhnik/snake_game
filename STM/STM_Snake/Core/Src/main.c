@@ -82,8 +82,9 @@ uint8_t randomize_apple();
 /* USER CODE BEGIN 0 */
 
 uint8_t randomize_apple(){
-	//frog_x = rand() % 10;
-	return *frog_y = rand() % 10;
+	static uint8_t apple_y;
+	    apple_y = rand() % 10;
+	    return apple_y;
 }
 
 //HAL_UART_Receive(&huart1, )
@@ -361,12 +362,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             uint8_t command = 3;
             move_snake(command, *frog_x, *frog_y, payload);
 
-            if (payload == 0xFF) {
-            	uint8_t game_over_msg[] = "Game Over\r\n";
-            	HAL_UART_Transmit(&huart1, game_over_msg , sizeof(game_over_msg) - 1, 100);
-            	HAL_TIM_Base_Stop_IT(&htim2);
-            	return;
-            }
 
             uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, *frog_x, *frog_y);
 
@@ -386,10 +381,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+
+
+
+
+
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+	  HAL_Delay(500);
   }
   /* USER CODE END Error_Handler_Debug */
 }

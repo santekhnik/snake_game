@@ -44,7 +44,7 @@ uint16_t encode_frame_err(const uint8_t *payload, uint8_t *frame, uint8_t cmd_by
 //   [4]         : CRC (старший байт)
 //   [5]         : CRC (молодший байт)
 // Функція повертає довжину пакету (payload_len + 5).
-uint16_t encode_frame_end(const uint8_t *payload, uint8_t payload_len, uint8_t *frame, uint8_t cmd_byte);
+uint16_t encode_frame_end(const uint8_t *payload, uint8_t *frame, uint8_t cmd_byte);
 
 // Функція розкодування пакету. Повертає 0, якщо все гаразд, або код помилки.
 int decode_frame(const uint8_t *frame, uint8_t frame_len);
