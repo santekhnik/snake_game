@@ -1,9 +1,7 @@
 #include "SnakeLogic.h"
 #include <stdint.h>
 
-void new_frog(){
 
-}
 
 
 uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload){
@@ -11,6 +9,7 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
     static uint8_t snake_length = 4;						//початкові координати і довжина змійки
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
     static uint8_t y_buffer[128] = {15, 15, 15, 15};
+
 
     for (int i = snake_length - 1; i > 0; i--) {
         x_buffer[i] = x_buffer[i - 1];
@@ -29,7 +28,6 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
 
     if (x_buffer[0] == frog_x && y_buffer[0] == frog_y) {	//перевірка на з'їдене яблуко
         snake_length++;
-        new_frog();
         if (snake_length > 128) snake_length = 128;			//що?
     }
 
