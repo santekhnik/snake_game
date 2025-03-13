@@ -1,1 +1,2 @@
-../Core/Src/SnakeLogic.c:4:9:move_snake	32	static
+../Core/Src/SnakeLogic.c:4:6:new_frog	8	static
+../Core/Src/SnakeLogic.c:9:9:move_snake	32	static

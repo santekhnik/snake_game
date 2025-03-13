@@ -74,17 +74,13 @@ static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
-//void simulate_snake_game();
-uint8_t randomize_apple();
+
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint8_t randomize_apple(){
-	//frog_x = rand() % 10;
-	return *frog_y = rand() % 10;
-}
 
 //HAL_UART_Receive(&huart1, )
 
