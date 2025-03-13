@@ -56,7 +56,7 @@ uint8_t *payload_len;			//довжина корисного навантажен
 uint8_t payload[256];			//корисна інформація в пакеті "змійки"
 uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
 uint8_t command = 4;			//значення кнопки, що натискається на PC
-
+uint8_t time_count;
 
 //Змінні логіки гри
 uint8_t *frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
@@ -328,7 +328,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
 
     //	uint8_t handler_prot = rx_buffer[1];
-    	uint8_t handler_prot = rx_buffer[1];
+    	uint8_t handler_prot=3;
     	switch(handler_prot){
     		case(1):
 
@@ -342,25 +342,31 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
     		case(3):
 
-		uint8_t command = rx_buffer[2];
 
-		      uint8_t payload = move_snake(command, *frog_x, *frog_y);
-		      uint8_t frame_length = encode_frame_snake(payload, sizeof(payload)+1, tx_buffer, 0x02, frog_x, frog_y);
-		      HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
-		      break;
+
 
     	}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
     }
 }
 
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
-    //	uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
+        time_count++;
+
+        if (time_count >= 3) {
+        	uint8_t command = 3;
+        	uint8_t payload = move_snake(command, frog_x, frog_y);
+        	uint8_t frame_length = encode_frame_snake(&payload, 1, tx_buffer, 0x02, frog_x, frog_y);
+
+
+        	HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+        	time_count = 0;
+        }
 
     }
 }
-
 /* USER CODE END 4 */
 
 /**
