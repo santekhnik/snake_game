@@ -1,48 +1,35 @@
-#include "main.h"
+#include "SnakeLogic.h"
+#include <stdint.h>
 
+uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload){
 
-uint8_t x, y = 1;
-uint8_t body_x[128];			//массив значень координат X змійки
-uint8_t body_y[128];			//массив значень координат Y змійки
-uint8_t length;					//значення довжини змійки
+    static uint8_t snake_length = 4;
+    static uint8_t x_buffer[128] = {10, 11, 12, 13};
+    static uint8_t y_buffer[128] = {15, 15, 15, 15};
 
-/* Функція руху змійки */
-uint8_t move_snake(uint8_t command,uint8_t frog_x, uint8_t frog_y) {
-
-    if (body_x[0] == frog_x && body_y[0] == frog_y) {
-        length++;
-        randomize_apple();
+    for (int i = snake_length - 1; i > 0; i--) {
+        x_buffer[i] = x_buffer[i - 1];
+        y_buffer[i] = y_buffer[i - 1];
     }
-    for (int i = length; i > 0; i--) {
-        body_x[i] = body_x[i - 1];
-        body_y[i] = body_y[i - 1];
+
+    //от я просто хочу здохнути від вашого програмування бляха
+    switch (command) {
+        case 1: y_buffer[0]--; break;
+        case 2: y_buffer[0]++; break;
+        case 3: x_buffer[0]--; break;
+        case 4: x_buffer[0]++; break;
+        default: break;
     }
-switch (command) {
-case 1:
-    body_y[0]++;
-    y++;
-    break;
-case 2:
-    body_y[0]--;
-    y--;
-    break;
-case 3:
-    body_x[0]--;
-    x--;
-    break;
-case 4:
-    body_x[0]++;
-    x++;
-    break;
-default:
 
-    break;}
 
-    uint8_t payload[length * 2];  // Масив для об'єднаних даних
-
-    for (uint8_t i = 0; i < length; i++) {
-        payload[i * 2] = body_x[i];      // Записуємо елементи з першого масиву
-        payload[i * 2 + 1] = body_y[i];  // Записуємо елементи з другого масиву
+    if (x_buffer[0] == frog_x && y_buffer[0] == frog_y) {
+        snake_length++;
+        if (snake_length > 128) snake_length = 128;
     }
-return payload;
+
+
+    for (int i = 0; i < snake_length; i++) {
+        payload[2 * i] = x_buffer[i];
+        payload[2 * i + 1] = y_buffer[i];
+    }
 }

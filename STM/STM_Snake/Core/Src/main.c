@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "protocol.h"
 #include "SnakeLogic.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -356,17 +357,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         time_count++;
 
         if (time_count >= 3) {
-        	uint8_t command = 3;
-        	uint8_t payload = move_snake(command, frog_x, frog_y);
-        	uint8_t frame_length = encode_frame_snake(&payload, 1, tx_buffer, 0x02, frog_x, frog_y);
 
+            uint8_t command = 3;
+            move_snake(command, *frog_x, *frog_y, payload);
 
-        	HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
-        	time_count = 0;
+            uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, *frog_x, *frog_y);
+
+            HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+
+            time_count = 0;
         }
-
     }
 }
+
 /* USER CODE END 4 */
 
 /**
