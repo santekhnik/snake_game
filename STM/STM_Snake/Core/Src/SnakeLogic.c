@@ -6,6 +6,8 @@
 
 uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *payload){
 
+	static uint8_t temp_x = 1;
+	static uint8_t temp_y = 2;
     static uint8_t snake_length = 4;						//початкові координати і довжина змійки
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
     static uint8_t y_buffer[128] = {15, 15, 15, 15};
@@ -28,7 +30,13 @@ uint8_t move_snake(uint8_t command, uint8_t frog_x, uint8_t frog_y, uint8_t *pay
 
     if (x_buffer[0] == frog_x && y_buffer[0] == frog_y) {	//перевірка на з'їдене яблуко
         snake_length++;
-        if (snake_length > 128) snake_length = 128;			//що?
+
+    	for (uint8_t i = 0; i < snake_length; i+2) {
+    	            if (x_buffer[i] == temp_x && y_buffer[i++] == temp_y) {
+    	                uint8_t valid = 0;
+    	            }
+    	        }
+        if (snake_length > 255) snake_length = 255;			//що?
     }
 
 
