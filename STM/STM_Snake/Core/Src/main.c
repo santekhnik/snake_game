@@ -361,6 +361,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             uint8_t command = 3;
             move_snake(command, *frog_x, *frog_y, payload);
 
+            if (payload == 0xFF) {
+            	uint8_t game_over_msg[] = "Game Over\r\n";
+            	HAL_UART_Transmit(&huart1, game_over_msg , sizeof(game_over_msg) - 1, 100);
+            	HAL_TIM_Base_Stop_IT(&htim2);
+            	return;
+            }
+
             uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, *frog_x, *frog_y);
 
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
