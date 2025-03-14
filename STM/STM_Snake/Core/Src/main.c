@@ -62,7 +62,7 @@ uint8_t time_count;
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
 uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
-uint8_t *snake_length;
+
 
 /* USER CODE END PV */
 
@@ -366,7 +366,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
         if (time_count >= 3) {
         	move_snake(second_byte, &frog_x, &frog_y, payload);
-            uint8_t frame_length = encode_frame_snake(payload, *snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
+            uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, frog_x, frog_y);
 
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
 
