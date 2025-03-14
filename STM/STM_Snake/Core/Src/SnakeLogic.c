@@ -33,6 +33,14 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
         default: break;
     }
 
+    for (int i = 0; i < snake_length; i++) {
+    if (x_buffer[i] >= 17) x_buffer[i] = 1;
+        else if (x_buffer[i] < 1) x_buffer[i] = 16;
+
+    if (y_buffer[i] >= 17) y_buffer[i] = 1;
+        else if (y_buffer[i] < 1) y_buffer[i] = 16;
+    }
+
     // Перевірка на "з'їдання" яблука
     if (x_buffer[0] == *frog_x && y_buffer[0] == *frog_y) {	//перевірка на з'їдене яблуко
             snake_length++;
