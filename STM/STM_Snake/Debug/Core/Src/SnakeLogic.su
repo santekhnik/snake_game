@@ -1,2 +1,6 @@
 ../Core/Src/SnakeLogic.c:5:6:randomize_apple	16	static
+<<<<<<< Updated upstream
 ../Core/Src/SnakeLogic.c:10:6:move_snake	40	static
+=======
+../Core/Src/SnakeLogic.c:10:9:move_snake	40	static
+>>>>>>> Stashed changes
