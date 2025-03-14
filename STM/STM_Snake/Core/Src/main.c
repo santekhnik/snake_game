@@ -33,7 +33,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define GAME_OVER_CMD 0x03
+#define GAME_OVER_CMD 0
+#define ERR_SHORT_FRAME 1
+#define ERR_INVALID_CMD 3
+#define ERR_INVALID_CRC 4
+#define ERR_UNKNOWN 99
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,7 +71,9 @@ uint8_t *y_buffer[128];			//массив значень координат Y з�
 
 //завершення логіки гри
 uint8_t game_over_flag = 0;
-
+uint8_t error_code;
+//помилка
+uint8_t error_code;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -391,21 +397,43 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
+ void Error_Handler() {
+    switch (error_code) {
+        case ERR_SHORT_FRAME:
+            encode_frame_err((uint8_t *)"Short Frame Error", tx_buffer, 0x01);
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);  // Увімкнути світлодіод PC9
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // Вимкнути
+            break;
 
+        case ERR_INVALID_CMD:
+            encode_frame_err((uint8_t *)"Invalid Command", tx_buffer, 0x02);
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // Увімкнути світлодіод PC8
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Вимкнути
+            break;
 
+        case ERR_INVALID_CRC:
+            encode_frame_err((uint8_t *)"CRC Error", tx_buffer, 0x04);
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);  // PC9 ON
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // PC8 ON
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 OFF
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // PC8 OFF
+            break;
 
+        default:
+            encode_frame_err((uint8_t *)"Unknown Error", tx_buffer, 0xFF);
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // PC8 ON
+            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // PC8 OFF
+            break;
+    }
 
 
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
-	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
 	  HAL_Delay(500);
   }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
