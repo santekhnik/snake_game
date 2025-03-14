@@ -6,6 +6,7 @@ env3.11/
 
 PC/src/__pycache__/
 PC/test.py
+PC/src/test_main.py
 
 
 
