@@ -5,8 +5,7 @@ env3.11/
 *.pyo
 
 PC/src/__pycache__/
+
 PC/test.py
 PC/src/test_main.py
-
-
 
