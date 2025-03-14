@@ -7,6 +7,11 @@ void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
     *frog_y = rand() % 10;
 }
 
+
+
+
+
+
 uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload) {
     static uint8_t snake_length = 4;
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
@@ -33,6 +38,12 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
         if (snake_length > 128) snake_length = 128;
         randomize_apple(frog_x, frog_y);  // Генеруємо нове яблуко
     }
+
+    for (int i = 1; i < snake_length; i++) {
+      if (x_buffer[0] == x_buffer[i] && y_buffer[0] == y_buffer[i]) {
+            return 8;  // Змійка зіткнулась сама з собою
+         }
+      }
 
     // Формуємо payload для відображення змійки
     for (int i = 0; i < snake_length; i++) {

@@ -330,17 +330,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     	second_byte = rx_buffer[2];
     	switch(cmd_code){
     		case(1):
-
-
 			uint8_t Decoder_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
-    		//HAL_UART_Transmit(&huart1, rx_buffer,sizeof(rx_buffer), 100);
-
     		if (Decoder_receive==0 && second_byte == 1) {
-    			second_byte=4;
     			uint8_t response[5] = {0x7E,0x01,0x02,0xD1,0x93};
     		    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
     			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
-    			HAL_TIM_Base_Start_IT(&htim2);
+
 
 
     		}
@@ -350,8 +345,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		break;
 
     		case(3):
-
-
+			if(second_byte == 0){
+			move_snake(second_byte, &frog_x, &frog_y, payload);
+            uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, frog_x, frog_y);
+            HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+			}
+    		if(second_byte == 1 || 2 || 3 || 4 ){
+    			HAL_TIM_Base_Start_IT(&htim2);
+    		}
 
     	}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
