@@ -402,12 +402,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         case ERR_SHORT_FRAME:
             encode_frame_err((uint8_t *)"Short Frame Error", tx_buffer, 0x01);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);  // Увімкнути світлодіод PC9
+            HAL_Delay(500);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // Вимкнути
             break;
 
         case ERR_INVALID_CMD:
             encode_frame_err((uint8_t *)"Invalid Command", tx_buffer, 0x02);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // Увімкнути світлодіод PC8
+            HAL_Delay(500);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Вимкнути
             break;
 
@@ -415,6 +417,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             encode_frame_err((uint8_t *)"CRC Error", tx_buffer, 0x04);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);  // PC9 ON
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // PC8 ON
+            HAL_Delay(500);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9); // PC9 OFF
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // PC8 OFF
             break;
@@ -422,6 +425,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         default:
             encode_frame_err((uint8_t *)"Unknown Error", tx_buffer, 0xFF);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);  // PC8 ON
+            HAL_Delay(500);
             HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // PC8 OFF
             break;
     }
@@ -431,7 +435,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   __disable_irq();
   while (1)
   {
-	  HAL_Delay(500);
   }
 
   /* USER CODE END Error_Handler_Debug */
