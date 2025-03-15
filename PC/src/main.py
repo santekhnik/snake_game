@@ -1,7 +1,4 @@
-def hello_world():
-    print("Hello world!")
-
-
+from main_screen import main_menu
 
 if __name__ == "__main__":
-    hello_world()
+    main_menu()
