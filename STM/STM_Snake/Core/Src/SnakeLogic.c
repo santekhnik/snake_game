@@ -43,6 +43,8 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
     // Перевірка на "з'їдання" яблука
     if (x_buffer[0] == *frog_x && y_buffer[0] == *frog_y) {	//перевірка на з'їдене яблуко
             snake_length++;
+            x_buffer[snake_length]=x_buffer[snake_length-1];
+            y_buffer[snake_length]=y_buffer[snake_length-1];
             legit = 0;
         	for (uint8_t i = 0; i < snake_length; i++) {
         		i++;
