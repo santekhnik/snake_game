@@ -45,7 +45,7 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
         	for (uint8_t i = 0; i < snake_length; i++) {
         		i++;
         		do {
-        			randomize_apple(frog_x, frog_y);
+        			randomize_apple(frog_x, frog_y);		//генерація яблука і страшні перевірки на адекватність генерації
         		    legit = 1;
         		    if (frog_x == 0||frog_y == 0)legit = 0;
         		    for (uint8_t i = 0; i < snake_length; i++) {

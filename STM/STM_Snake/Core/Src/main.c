@@ -62,7 +62,7 @@ uint8_t im_single_packet = 0; //команда для одноразової п�
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
 uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
-
+uint8_t snake_length;		//поінтер на довжину зміюки
 
 /* USER CODE END PV */
 
@@ -369,7 +369,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
             uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
             move_snake(second_byte, &frog_x, &frog_y, initial_snake_payload);
-            uint8_t frame_length = encode_frame_snake(initial_snake_payload, 8, tx_buffer, 0x02, frog_x, frog_y);
+            uint8_t frame_length = encode_frame_snake(initial_snake_payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
             HAL_TIM_Base_Stop_IT(&htim2);
             im_single_packet = 0;
@@ -378,7 +378,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
                 if (time_count > 1 && !im_single_packet) {
                     move_snake(second_byte, &frog_x, &frog_y, payload);
-                    uint8_t frame_length = encode_frame_snake(payload, 8, tx_buffer, 0x02, frog_x, frog_y);
+                    uint8_t frame_length = encode_frame_snake(payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
                     HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
 
                     time_count = 0;
