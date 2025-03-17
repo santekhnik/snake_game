@@ -64,23 +64,23 @@ uint8_t encode_frame_snake(const uint8_t *payload, uint8_t payload_len, uint8_t 
 uint16_t encode_frame_err(const uint8_t *payload, uint8_t *tx_buffer, uint8_t cmd_byte) {
 	tx_buffer[0] = START_BYTE;
 	tx_buffer[1] = cmd_byte;
-    // Очікуємо, що payload містить рівн о 2 байти
-    memcpy(&tx_buffer[2], payload, 2);
+    tx_buffer[2] = *payload;
     uint16_t crc = crc16_ccitt(payload, 2, cmd_byte);
-    tx_buffer[4] = (crc >> 8) & 0xFF;
-    tx_buffer[5] = crc & 0xFF;
+    tx_buffer[3] = (crc >> 8) & 0xFF;
+    tx_buffer[4] = crc & 0xFF;
 
     return 6;  // Структура пакету має 6 байт
+
 }
 
 //функція кодування пакету закінчення гри
 uint16_t encode_frame_end(const uint8_t *payload, uint8_t payload_len, uint8_t *tx_buffer, uint8_t cmd_byte) {
 	tx_buffer[0] = START_BYTE;                  				// Початковий байт
 	tx_buffer[1] = cmd_byte;                    				// Байт комади
-    memcpy(&tx_buffer[2], payload, payload_len);				// копіюємо пейлоад
-    uint16_t crc = crc16_ccitt(payload, 1, cmd_byte);    	// Додавання CRC (старший байт перший)
-    tx_buffer[3 + payload_len] = (crc >> 8) & 0xFF; 			// crc high
-    tx_buffer[4 + payload_len] = crc & 0xFF;        			// crc low
+    tx_buffer[2] = *payload;										// копіюємо пейлоад
+    uint16_t crc = crc16_ccitt(payload, 1, cmd_byte);    		// Додавання CRC (старший байт перший)
+    tx_buffer[3] = (crc >> 8) & 0xFF; 							// crc high
+    tx_buffer[4] = crc & 0xFF;        							// crc low
     return 5;
 }
 

@@ -2,5 +2,5 @@
 ../Core/Src/protocol.c:26:10:crc16_ccitt	24	static
 ../Core/Src/protocol.c:42:9:encode_frame_snake	56	static
 ../Core/Src/protocol.c:64:10:encode_frame_err	40	static
-../Core/Src/protocol.c:77:10:encode_frame_end	48	static
+../Core/Src/protocol.c:77:10:encode_frame_end	40	static
 ../Core/Src/protocol.c:87:5:decode_frame	40	static

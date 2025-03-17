@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
-    *frog_x = rand() % 10;
-    *frog_y = rand() % 10;
+    *frog_x = rand() % 16;
+    *frog_y = rand() % 16;
 }
 
 
@@ -47,7 +47,7 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
         		do {
         			randomize_apple(frog_x, frog_y);
         		    legit = 1;
-
+        		    if (frog_x == 0||frog_y == 0)legit = 0;
         		    for (uint8_t i = 0; i < snake_length; i++) {
         		        if (x_buffer[i] == *frog_x && y_buffer[i] == *frog_y) {
         		            legit = 0;
