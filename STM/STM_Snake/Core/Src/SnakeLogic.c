@@ -2,16 +2,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-extern uint8_t snake_length = 4;
+ uint8_t snake_length = 4;
 
 void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
-    *frog_x = rand() % 16;
-    *frog_y = rand() % 16;
+    *frog_x = (rand() % 16)+1;
+    *frog_y = (rand() % 16)+1;
 }
 
 
 
 uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload) {
+
     static uint8_t legit = 1;
     static uint8_t x_buffer[128] = {10, 11, 12, 13};
     static uint8_t y_buffer[128] = {15, 15, 15, 15};
@@ -46,9 +47,9 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
         	for (uint8_t i = 0; i < snake_length; i++) {
         		i++;
         		do {
-        			randomize_apple(frog_x, frog_y);		//генерація яблука і страшні перевірки на адекватність генерації
+        			randomize_apple(frog_x, frog_y);
         		    legit = 1;
-        		    if (frog_x == 0||frog_y == 0)legit = 0;
+
         		    for (uint8_t i = 0; i < snake_length; i++) {
         		        if (x_buffer[i] == *frog_x && y_buffer[i] == *frog_y) {
         		            legit = 0;

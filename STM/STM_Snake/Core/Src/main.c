@@ -59,6 +59,7 @@ uint8_t *cmd_byte;	 			//байт команди в будь-якому вхід
 uint8_t second_byte;     		//значення кнопки, що натискається на PC
 uint8_t time_count;
 uint8_t im_single_packet = 0; //команда для одноразової передачі через таймер
+uint8_t flag = 0;             //команда для паузи через пробіл
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
 uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
@@ -214,9 +215,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 6999;
+  htim2.Init.Prescaler = 11999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 6856;
+  htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -345,10 +346,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		             HAL_TIM_Base_Start_IT(&htim2);
 		            }
 
-    				if (second_byte == 5) {
+    				if (second_byte == 5 && flag == 0) {
     					HAL_TIM_Base_Stop_IT(&htim2);
+    					flag = 1;
     				}
-
+    				if (second_byte == 5 && flag == 1 ) {
+    				   	HAL_TIM_Base_Start_IT(&htim2);
+     					flag = 0;
+    				   }
 
     				if (second_byte == 1 || second_byte == 2 || second_byte == 3 || second_byte == 4) {
     					HAL_TIM_Base_Start_IT(&htim2);
@@ -382,7 +387,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
                     time_count = 0;
                 }
-            }
+ }
 
 
 /* USER CODE END 4 */
