@@ -9,9 +9,6 @@ void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
 
 
 
-
-
-
 uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload) {
     uint8_t snake_length = 4;
     static uint8_t legit = 1;
@@ -26,7 +23,7 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
 
     // Обробка команд
     switch (command) {
-        case 1: y_buffer[0]--; break;  // Вгору
+    	case 1: y_buffer[0]--; break;  // Вгору
         case 2: y_buffer[0]++; break;  // Вниз
         case 3: x_buffer[0]--; break;  // Вліво
         case 4: x_buffer[0]++; break;  // Вправо
