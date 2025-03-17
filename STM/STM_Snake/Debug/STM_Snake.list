@@ -541,28 +541,28 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
  800041e:	b2da      	uxtb	r2, r3
  8000420:	4b53      	ldr	r3, [pc, #332]	@ (8000570 <move_snake+0x288>)
  8000422:	701a      	strb	r2, [r3, #0]
-            x_buffer[snake_length]=x_buffer[snake_length-1];
+            x_buffer[snake_length+1]=x_buffer[snake_length];
  8000424:	4b52      	ldr	r3, [pc, #328]	@ (8000570 <move_snake+0x288>)
  8000426:	781b      	ldrb	r3, [r3, #0]
- 8000428:	3b01      	subs	r3, #1
- 800042a:	4a51      	ldr	r2, [pc, #324]	@ (8000570 <move_snake+0x288>)
- 800042c:	7812      	ldrb	r2, [r2, #0]
- 800042e:	0011      	movs	r1, r2
+ 8000428:	0019      	movs	r1, r3
+ 800042a:	4b51      	ldr	r3, [pc, #324]	@ (8000570 <move_snake+0x288>)
+ 800042c:	781b      	ldrb	r3, [r3, #0]
+ 800042e:	3301      	adds	r3, #1
  8000430:	4a50      	ldr	r2, [pc, #320]	@ (8000574 <move_snake+0x28c>)
- 8000432:	5cd2      	ldrb	r2, [r2, r3]
- 8000434:	4b4f      	ldr	r3, [pc, #316]	@ (8000574 <move_snake+0x28c>)
- 8000436:	545a      	strb	r2, [r3, r1]
-            y_buffer[snake_length]=y_buffer[snake_length-1];
+ 8000432:	5c51      	ldrb	r1, [r2, r1]
+ 8000434:	4a4f      	ldr	r2, [pc, #316]	@ (8000574 <move_snake+0x28c>)
+ 8000436:	54d1      	strb	r1, [r2, r3]
+            y_buffer[snake_length+1]=y_buffer[snake_length];
  8000438:	4b4d      	ldr	r3, [pc, #308]	@ (8000570 <move_snake+0x288>)
  800043a:	781b      	ldrb	r3, [r3, #0]
- 800043c:	3b01      	subs	r3, #1
- 800043e:	4a4c      	ldr	r2, [pc, #304]	@ (8000570 <move_snake+0x288>)
- 8000440:	7812      	ldrb	r2, [r2, #0]
- 8000442:	0011      	movs	r1, r2
+ 800043c:	0019      	movs	r1, r3
+ 800043e:	4b4c      	ldr	r3, [pc, #304]	@ (8000570 <move_snake+0x288>)
+ 8000440:	781b      	ldrb	r3, [r3, #0]
+ 8000442:	3301      	adds	r3, #1
  8000444:	4a4c      	ldr	r2, [pc, #304]	@ (8000578 <move_snake+0x290>)
- 8000446:	5cd2      	ldrb	r2, [r2, r3]
- 8000448:	4b4b      	ldr	r3, [pc, #300]	@ (8000578 <move_snake+0x290>)
- 800044a:	545a      	strb	r2, [r3, r1]
+ 8000446:	5c51      	ldrb	r1, [r2, r1]
+ 8000448:	4a4b      	ldr	r2, [pc, #300]	@ (8000578 <move_snake+0x290>)
+ 800044a:	54d1      	strb	r1, [r2, r3]
             legit = 0;
  800044c:	4b4b      	ldr	r3, [pc, #300]	@ (800057c <move_snake+0x294>)
  800044e:	2200      	movs	r2, #0
