@@ -8,7 +8,7 @@ from frame_codec import STMProtocol
 class UARTConnection:
     BAUDRATE = 9600
     TIMEOUT = 1
-    CONNECT_TIMEOUT = 2
+    CONNECT_TIMEOUT = 1
 
     def __init__(self):
         self.uart = None

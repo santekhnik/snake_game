@@ -2,6 +2,10 @@ import pygame
 import sys
 from settings import WIDTH, HEIGHT
 from button import start_button, settings_button, exit_button
+from uart import UARTConnection
+from snake_play_screen import SnakePlayScreen
+import threading
+from notification_manager import NotificationManager
 
 
 class MainMenu:
@@ -9,7 +13,25 @@ class MainMenu:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.background = pygame.image.load("assets/images/background1.png")
+        self.notification_manager = NotificationManager()
         self.running = True
+        self.uart_conn = UARTConnection()
+
+
+        self.connect_thread = threading.Thread(target=self.connect_to_stm, daemon=True)
+        self.connect_thread.start()
+
+    def connect_to_stm(self):
+        """Автоматично підключається до STM при запуску гри"""
+        print("тест")
+        self.notification_manager.show("Виконується автопідключення до STM...", duration=3)
+        connection_result = self.uart_conn.auto_connect()
+
+        if connection_result["status"] == "success":
+            self.notification_manager.show(f"{connection_result['message']}", duration=3)
+
+        else:
+            self.notification_manager.show(f"{connection_result['message']}", duration=3)
 
     def run(self):
         """Головний цикл меню"""
@@ -37,6 +59,7 @@ class MainMenu:
         """Малювання меню"""
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.background, (-400, -100))
+        self.notification_manager.draw(self.screen)
 
         font = pygame.font.Font(None, 72)
         text_surface = font.render("Snake Game", True, (255, 255, 255))
@@ -48,10 +71,14 @@ class MainMenu:
             btn.draw(self.screen)
 
     def start_game(self):
-        """Запуск гри"""
-        from snake_play_screen import SnakePlayScreen  # Додаємо новий екран
-        game = SnakePlayScreen()
+        """Запуск гри, передача UART"""
+        if not self.uart_conn:
+            print("⚠️ Немає підключення до STM! Гра неможлива.")
+            return
+
+        game = SnakePlayScreen(self.uart_conn)
         game.run()
+
 
     def quit_game(self):
         """Вихід з гри"""
