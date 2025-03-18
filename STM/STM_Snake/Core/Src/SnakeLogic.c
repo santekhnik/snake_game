@@ -3,6 +3,10 @@
 #include <stdlib.h>
 
  uint8_t snake_length = 4;
+ static uint8_t x_buffer[128] = {10, 11, 12, 13};
+ static uint8_t y_buffer[128] = {15, 15, 15, 15};
+
+
 
 void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
     *frog_x = (rand() % 16)+1;
@@ -15,8 +19,7 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
 
     	static uint8_t legit = 1;
     	static uint8_t last_command = 0;  // 0 — змійка стоїть
-        static uint8_t x_buffer[128] = {10, 11, 12, 13};
-        static uint8_t y_buffer[128] = {15, 15, 15, 15};
+
 
         // Заборона руху в зворотному напрямку
         if ((command == 1 && last_command == 2) || (command == 2 && last_command == 1) ||
@@ -87,4 +90,26 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
     }
 
     return 0;
+}
+
+void reset_game(uint8_t *frog_x, uint8_t *frog_y) {
+
+    snake_length = 4;
+
+
+    uint8_t start_x = 10;
+    uint8_t start_y = 15;
+
+
+    x_buffer[0] = start_x;
+    y_buffer[0] = start_y;
+
+
+    for (int i = 1; i < snake_length; i++) {
+        x_buffer[i] = start_x - i;
+        y_buffer[i] = start_y;
+    }
+
+
+    randomize_apple(frog_x, frog_y);
 }

@@ -361,6 +361,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
+
+
+
+    	 if (move_snake(second_byte, &frog_x, &frog_y, payload) == 8) {
+    	 HAL_TIM_Base_Stop_IT(&htim2);
+    	 uint8_t response[5] = {0x7E,0x06,0x02,0xD1,0x93}; // треба згенерувати crc
+    	 }
+
+
+
     }
 
 }
@@ -372,7 +382,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
         if (im_single_packet) {
 
-            uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
+        	reset_game(&frog_x, &frog_y);
+
+        	uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
             move_snake(second_byte, &frog_x, &frog_y, initial_snake_payload);
             uint8_t frame_length = encode_frame_snake(initial_snake_payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);

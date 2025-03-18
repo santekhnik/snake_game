@@ -1,2 +1,3 @@
-../Core/Src/SnakeLogic.c:7:6:randomize_apple	3
-../Core/Src/SnakeLogic.c:14:9:move_snake	34
+../Core/Src/SnakeLogic.c:11:6:randomize_apple	3
+../Core/Src/SnakeLogic.c:18:9:move_snake	34
+../Core/Src/SnakeLogic.c:95:6:reset_game	2
