@@ -1,9 +1,7 @@
 import pygame
 from settings import WIDTH
 
-
 pygame.mixer.init()
-
 
 class ImageButton:
     def __init__(self, x, y, width, height, text, image_path, hover_image_path=None, sound_path=None):
@@ -36,7 +34,7 @@ class ImageButton:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-    # Перевіряємо чи наведена наши мишка на об'єкт
+    # Перевіряємо чи наведена нашa мишка на об'єкт
     def check_hover(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
@@ -47,7 +45,31 @@ class ImageButton:
             pygame.event.post(pygame.event.Event(pygame.USEREVENT, button=self))
 
 
+# Центрована кнопка "NEW GAME"
+start_button = ImageButton(
+    WIDTH / 2 - (252 / 2), 515, 252, 60,
+    "NEW GAME",
+    "assets/images/greenNormal.png",
+    "assets/images/greenDown.png",
+    "assets/sound_effects/click.mp3.mp3"
+)
 
-start_button = ImageButton(WIDTH/2-(252/2), 400, 252, 74, "NEW GAME", "assets/images/greenNormal.png", "assets/images/greenDown.png", "assets/sound_effects/click.mp3.mp3")
-settings_button = ImageButton(WIDTH/2-(252/2), 500, 252, 74, "PORTS", "assets/images/yellowNormal.png", "assets/images/yellowDown.png", "assets/sound_effects/click.mp3.mp3")
-exit_button = ImageButton(WIDTH/2-(252/2), 600, 252, 74, "EXIT", "assets/images/redNormal.png", "assets/images/redDown.png", "assets/sound_effects/click.mp3.mp3")
+# Кнопка "PORTS" у правому верхньому куті
+settings_button = ImageButton(
+    WIDTH - 252 + 150,  # x = ширина екрана - ширина кнопки - відступ
+    20,                # y = відступ зверху
+    85, 85,
+    "",
+    "assets/images/settings_button.png",
+    "",
+    "assets/sound_effects/click.mp3.mp3"
+)
+
+# Центрована кнопка "EXIT"
+exit_button = ImageButton(
+    WIDTH / 2 - (252 / 2), 600, 252, 60,
+    "EXIT",
+    "assets/images/redNormal.png",
+    "assets/images/redDown.png",
+    "assets/sound_effects/click.mp3.mp3"
+)
