@@ -1,2 +1,2 @@
 ../Core/Src/SnakeLogic.c:7:6:randomize_apple	3
-../Core/Src/SnakeLogic.c:14:9:move_snake	24
+../Core/Src/SnakeLogic.c:14:9:move_snake	34

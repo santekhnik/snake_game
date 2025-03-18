@@ -13,24 +13,35 @@ void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
 
 uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload) {
 
-    static uint8_t legit = 1;
-    static uint8_t x_buffer[128] = {10, 11, 12, 13};
-    static uint8_t y_buffer[128] = {15, 15, 15, 15};
+    	static uint8_t legit = 1;
+    	static uint8_t last_command = 0;  // 0 — змійка стоїть
+        static uint8_t x_buffer[128] = {10, 11, 12, 13};
+        static uint8_t y_buffer[128] = {15, 15, 15, 15};
 
-    // Рухаєм змійку
-    for (int i = snake_length - 1; i > 0; i--) {
-        x_buffer[i] = x_buffer[i - 1];
-        y_buffer[i] = y_buffer[i - 1];
-    }
+        // Заборона руху в зворотному напрямку
+        if ((command == 1 && last_command == 2) || (command == 2 && last_command == 1) ||
+            (command == 3 && last_command == 4) || (command == 4 && last_command == 3)) {
+            command = last_command;
+        } else if (command != 0) {
+            last_command = command;
+        }
 
-    // Обробка команд
-    switch (command) {
-    	case 1: y_buffer[0]--; break;  // Вгору
-        case 2: y_buffer[0]++; break;  // Вниз
-        case 3: x_buffer[0]--; break;  // Вліво
-        case 4: x_buffer[0]++; break;  // Вправо
-        default: break;
-    }
+        // Рухаєм змійку тільки якщо команда не 0
+        if (last_command != 0) {
+            for (int i = snake_length - 1; i > 0; i--) {
+                x_buffer[i] = x_buffer[i - 1];
+                y_buffer[i] = y_buffer[i - 1];
+            }
+
+            // Обробка команд руху
+            switch (last_command) {
+                case 1: y_buffer[0]--; break;  // Вгору
+                case 2: y_buffer[0]++; break;  // Вниз
+                case 3: x_buffer[0]--; break;  // Вліво
+                case 4: x_buffer[0]++; break;  // Вправо
+                default: break;
+            }
+        }
 
     for (int i = 0; i < snake_length; i++) {
     if (x_buffer[i] >= 17) x_buffer[i] = 1;

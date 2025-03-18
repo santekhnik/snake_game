@@ -360,6 +360,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     				}
     		}
     	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
+
     }
 
 }
