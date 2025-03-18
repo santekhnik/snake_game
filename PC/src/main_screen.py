@@ -16,11 +16,11 @@ def main_menu():
 
         # Додаємо фон
 
-        screen.blit(main_background, (-390, -185))
+        screen.blit(main_background, (-400, -100))
 
-        font = pygame.font.Font(None, 70)
+        font = pygame.font.Font(None, 72)
         text_surface = font.render("Snake Game", True, (255, 255, 255))
-        text_rect = text_surface.get_rect(center=(WIDTH / 2, 50))
+        text_rect = text_surface.get_rect(center=(WIDTH / 2, 100))
         screen.blit(text_surface, text_rect)
 
         for event in pygame.event.get():
