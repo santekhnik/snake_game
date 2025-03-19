@@ -5,5 +5,5 @@
 ../Core/Src/main.c:282:13:MX_DMA_Init	16	static
 ../Core/Src/main.c:300:13:MX_GPIO_Init	48	static
 ../Core/Src/main.c:326:6:HAL_UART_RxCpltCallback	32	static
-../Core/Src/main.c:378:6:HAL_TIM_PeriodElapsedCallback	56	static
-../Core/Src/main.c:412:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:379:6:HAL_TIM_PeriodElapsedCallback	56	static
+../Core/Src/main.c:414:6:Error_Handler	8	static,ignoring_inline_asm

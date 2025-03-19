@@ -14,6 +14,27 @@ void randomize_apple(uint8_t *frog_x, uint8_t *frog_y) {
 }
 
 
+void reset_game(uint8_t *frog_x, uint8_t *frog_y) {
+
+    snake_length = 4;
+
+
+    uint8_t start_x = 10;
+    uint8_t start_y = 15;
+
+
+    x_buffer[0] = start_x;
+    y_buffer[0] = start_y;
+
+
+    for (int i = 1; i < snake_length; i++) {
+        x_buffer[i] = start_x - i;
+        y_buffer[i] = start_y;
+    }
+
+
+    randomize_apple(frog_x, frog_y);
+}
 
 uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *payload) {
 
@@ -92,24 +113,3 @@ uint8_t move_snake(uint8_t command, uint8_t *frog_x, uint8_t *frog_y, uint8_t *p
     return 0;
 }
 
-void reset_game(uint8_t *frog_x, uint8_t *frog_y) {
-
-    snake_length = 4;
-
-
-    uint8_t start_x = 10;
-    uint8_t start_y = 15;
-
-
-    x_buffer[0] = start_x;
-    y_buffer[0] = start_y;
-
-
-    for (int i = 1; i < snake_length; i++) {
-        x_buffer[i] = start_x - i;
-        y_buffer[i] = start_y;
-    }
-
-
-    randomize_apple(frog_x, frog_y);
-}

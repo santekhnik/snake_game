@@ -58,7 +58,7 @@ uint8_t payload[256];			//корисна інформація в пакеті "�
 uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
 uint8_t second_byte;     		//значення кнопки, що натискається на PC
 uint8_t time_count;
-uint8_t im_single_packet = 0; //команда для одноразової передачі через таймер
+uint8_t im_single_packet; //команда для одноразової передачі через таймер
 uint8_t flag = 0;             //команда для паузи через пробіл
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
@@ -341,7 +341,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     		break;
 
     		case(3):
-				 if (second_byte == 0) {
+				 if (second_byte == 9) {
 					 im_single_packet = 1;
 		             HAL_TIM_Base_Start_IT(&htim2);
 		            }
@@ -367,6 +367,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     	 if (move_snake(second_byte, &frog_x, &frog_y, payload) == 8) {
     	 HAL_TIM_Base_Stop_IT(&htim2);
     	 uint8_t response[5] = {0x7E,0x06,0x02,0xD1,0x93}; // треба згенерувати crc
+    	 HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
     	 }
 
 
@@ -382,18 +383,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
         if (im_single_packet) {
 
-        	reset_game(&frog_x, &frog_y);
+        		reset_game(&frog_x, &frog_y);
+        		uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
+                move_snake(second_byte, &frog_x, &frog_y, initial_snake_payload);
+                uint8_t frame_length = encode_frame_snake(initial_snake_payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
+                HAL_UART_Transmit(&huart1,tx_buffer, frame_length, 100);
+                HAL_TIM_Base_Stop_IT(&htim2);
 
-        	uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
-            move_snake(second_byte, &frog_x, &frog_y, initial_snake_payload);
-            uint8_t frame_length = encode_frame_snake(initial_snake_payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
-            HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
-            HAL_TIM_Base_Stop_IT(&htim2);
-            im_single_packet = 0;
+                im_single_packet = 0;
+
+                }
             }
-        }
 
-                if (time_count > 1 && !im_single_packet) {
+                if (time_count > 1 && im_single_packet != 1) {
                     move_snake(second_byte, &frog_x, &frog_y, payload);
                     uint8_t frame_length = encode_frame_snake(payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
                     HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
