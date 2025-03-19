@@ -55,7 +55,7 @@ uint8_t tx_buffer[256];			//буфер повідомлень на надсил�
 uint8_t rx_buffer[5];			//буфер повідомлень на приймання
 uint8_t *payload_len;			//довжина корисного навантаження в пакеті "змійки"
 uint8_t payload[256];			//корисна інформація в пакеті "змійки"
-uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
+//uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
 uint8_t second_byte;     		//значення кнопки, що натискається на PC
 uint8_t time_count;
 uint8_t im_single_packet; //команда для одноразової передачі через таймер
@@ -63,7 +63,8 @@ uint8_t flag = 0;             //команда для паузи через пр
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
 uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
-
+uint8_t test_test;
+uint8_t dead_inside;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,7 +103,13 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	// Якщо змійка зіткнулася сама з собою
+	if (dead_inside == 8) {
+		reset_game(&frog_x, &frog_y);
+		HAL_TIM_Base_Stop_IT(&htim2);
+	    uint8_t response[5] = {0x7E, 0x06, 0x02, 0xD1, 0x93}; // (CRC треба згенерувати)
+	    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
+	}
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -325,85 +332,76 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
+        uint8_t cmd_code = rx_buffer[1];
+        second_byte = rx_buffer[2];
 
-    	uint8_t cmd_code = rx_buffer[1];
-    	second_byte = rx_buffer[2];
-    	switch(cmd_code){
-    		case(1):
-			uint8_t Decoder_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
-    		if (Decoder_receive==0 && second_byte == 1) {
-    			uint8_t response[5] = {0x7E,0x01,0x02,0xD1,0x93};
-    		    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
-    			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8,GPIO_PIN_SET);
+        switch(cmd_code) {
+            case 1: {
+                uint8_t Decoder_receive = decode_frame(rx_buffer, sizeof(rx_buffer));
+                if (Decoder_receive == 0 && second_byte == 1) {
+                    uint8_t response[5] = {0x7E, 0x01, 0x02, 0xD1, 0x93};
+                    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
+                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+                }
+                if (Decoder_receive == 4)
+                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+                break;
+            }
+            case 3: {
+                // Команда 9 – ініціалізація гри
+                if (second_byte == 9) {
+                    reset_game(&frog_x, &frog_y);
+                    // Викликаємо move_snake з command = 0 (без зміни напрямку)
+                    move_snake(0, &frog_x, &frog_y, payload);
+                    uint8_t frame_length = encode_frame_snake(payload, snake_length * 2, tx_buffer, 0x02, frog_x, frog_y);
+                    HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+                    HAL_TIM_Base_Stop_IT(&htim2);
+                    HAL_TIM_Base_Start_IT(&htim2);
+                                    }
 
-    		}
-    		if (Decoder_receive==4) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,GPIO_PIN_SET);
-    		break;
+                                if (second_byte == 5) {
 
-    		case(3):
-				 if (second_byte == 9) {
-					 im_single_packet = 1;
-		             HAL_TIM_Base_Start_IT(&htim2);
-		            }
+                                  if (flag == 0) {
+                                    HAL_TIM_Base_Stop_IT(&htim2);
+                                    flag = 1;
 
-    				if (second_byte == 5 && flag == 0) {
-    					HAL_TIM_Base_Stop_IT(&htim2);
-    					flag = 1;
-    				}
-    				if (second_byte == 5 && flag == 1 ) {
-    				   	HAL_TIM_Base_Start_IT(&htim2);
-     					flag = 0;
-    				   }
+                                  }
 
-    				if (second_byte == 1 || second_byte == 2 || second_byte == 3 || second_byte == 4) {
-    					HAL_TIM_Base_Start_IT(&htim2);
-    				}
-    		}
-    	 HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
+                                  else {
+                                   HAL_TIM_Base_Start_IT(&htim2);
+                                   flag = 0;
+
+                                  }
+                                  }
+                if (second_byte == 1 || second_byte == 2 || second_byte == 3 || second_byte == 4) {
+                    HAL_TIM_Base_Start_IT(&htim2);
+                }
+                break;
+            }
+        }
+        HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
 
-
-
-    	 if (move_snake(second_byte, &frog_x, &frog_y, payload) == 8) {
-    	 HAL_TIM_Base_Stop_IT(&htim2);
-    	 uint8_t response[5] = {0x7E,0x06,0x02,0xD1,0x93}; // треба згенерувати crc
-    	 HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
-    	 }
-
-
-
+        }
     }
 
-}
+
+
+
+
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
         time_count++;
-
-
-        if (im_single_packet) {
-
-        		reset_game(&frog_x, &frog_y);
-        		uint8_t initial_snake_payload[8] = {10, 15, 11, 15, 12, 15, 13, 15};// стартовий пакет змійки(потрібно узгодити)
-                move_snake(second_byte, &frog_x, &frog_y, initial_snake_payload);
-                uint8_t frame_length = encode_frame_snake(initial_snake_payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
-                HAL_UART_Transmit(&huart1,tx_buffer, frame_length, 100);
-                HAL_TIM_Base_Stop_IT(&htim2);
-
-                im_single_packet = 0;
-
-                }
-            }
-
-                if (time_count > 1 && im_single_packet != 1) {
-                    move_snake(second_byte, &frog_x, &frog_y, payload);
-                    uint8_t frame_length = encode_frame_snake(payload, snake_length*2, tx_buffer, 0x02, frog_x, frog_y);
-                    HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
-
-                    time_count = 0;
-                }
- }
-
+        if (time_count > 1) {
+        	test_test = second_byte;
+            move_snake(test_test, &frog_x, &frog_y, payload);
+            uint8_t frame_length = encode_frame_snake(payload, snake_length * 2, tx_buffer, 0x02, frog_x, frog_y);
+            HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+            time_count = 0;
+        }
+    }
+}
 
 /* USER CODE END 4 */
 

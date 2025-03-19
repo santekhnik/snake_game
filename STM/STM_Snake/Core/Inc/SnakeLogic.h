@@ -9,7 +9,7 @@
 #ifndef INC_SNAKELOGIC_H_
 #define INC_SNAKELOGIC_H_
 extern uint8_t snake_length;
-
+extern uint8_t dead_inside;
 
 
 
