@@ -104,12 +104,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	// Якщо змійка зіткнулася сама з собою
-	if (dead_inside == 8) {
-		reset_game(&frog_x, &frog_y);
-		HAL_TIM_Base_Stop_IT(&htim2);
-	    uint8_t response[5] = {0x7E, 0x06, 0x02, 0xD1, 0x93}; // (CRC треба згенерувати)
-	    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
-	}
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -400,6 +395,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
             time_count = 0;
         }
+    	if (dead_inside == 8) {
+    		reset_game(&frog_x, &frog_y);
+    		HAL_TIM_Base_Stop_IT(&htim2);
+    	    uint8_t response[5] = {0x7E, 0x06, 0x02, 0xD1, 0x93}; // (CRC треба згенерувати)
+    	    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
+    	}
     }
 }
 
