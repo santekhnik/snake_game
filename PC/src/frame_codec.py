@@ -108,6 +108,7 @@ class STMProtocol:
         cmd = frame[1]
 
         if cmd == 6:
+            print(frame)
             return {"status": "end"}
 
         if cmd in {4, 1}:

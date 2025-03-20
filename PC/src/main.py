@@ -20,16 +20,16 @@ class MainMenu:
 
         self.connect_thread = threading.Thread(target=self.connect_to_stm, daemon=True)
         self.connect_thread.start()
+        self.popup_window = None
+
 
     def connect_to_stm(self):
         """Автоматично підключається до STM при запуску гри"""
-        print("тест")
         self.notification_manager.show("Виконується автопідключення до STM...", duration=3)
         connection_result = self.uart_conn.auto_connect()
 
         if connection_result["status"] == "success":
             self.notification_manager.show(f"{connection_result['message']}", duration=3)
-
         else:
             self.notification_manager.show(f"{connection_result['message']}", duration=3)
 
@@ -66,6 +66,7 @@ class MainMenu:
         text_rect = text_surface.get_rect(center=(WIDTH / 2, 100))
         self.screen.blit(text_surface, text_rect)
 
+
         for btn in [start_button, settings_button, exit_button]:
             btn.check_hover(pygame.mouse.get_pos())
             btn.draw(self.screen)
@@ -73,7 +74,7 @@ class MainMenu:
     def start_game(self):
         """Запуск гри, передача UART"""
         if not self.uart_conn:
-            print("⚠️ Немає підключення до STM! Гра неможлива.")
+            print("Немає підключення до STM! Гра неможлива.")
             return
 
         game = SnakePlayScreen(self.uart_conn)

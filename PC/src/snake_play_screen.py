@@ -1,7 +1,12 @@
+from encodings.utf_7 import encode
+
 import pygame
 import sys
 import threading
 import time
+
+from Tools.scripts.generate_re_casefix import uname
+
 from frame_codec import STMProtocol
 from settings import WIDTH, HEIGHT, CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, FIELD_OFFSET_X, FIELD_OFFSET_Y
 from notification_manager import NotificationManager
@@ -57,9 +62,19 @@ class SnakePlayScreen:
             data = self.uart_conn.read_packet()
             if data["status"] == "success":
                 parsed_data = data["data"]
-                self.snake_positions = parsed_data["payload"]
-                self.frog_position = parsed_data["frog"]
+                try:
+                    self.snake_positions = parsed_data["payload"]
+                    self.frog_position = parsed_data["frog"]
+                    print(f"📩 Отримано дані: {parsed_data}")
+                except:
+                    print(parsed_data)
                 print(f"📩 Отримано дані: {parsed_data}")
+            elif data["status"] == "error":
+                print(data["status"], "error")
+            elif data["status"] == "timeout":
+                print(data["status"], "timeout")
+            elif data["status"] == "end":
+                print(data["status"], "end")
 
             time.sleep(0.1)  # Маленька затримка для зменшення навантаження
 

@@ -2,13 +2,14 @@ import serial
 import serial.tools.list_ports
 import time
 import threading
+
 from frame_codec import STMProtocol
 
 
 class UARTConnection:
     BAUDRATE = 9600
     TIMEOUT = 1
-    CONNECT_TIMEOUT = 2
+    CONNECT_TIMEOUT = 1
 
     def __init__(self):
         self.uart = None
@@ -26,6 +27,13 @@ class UARTConnection:
         except serial.SerialException:
             result["ser"] = None
 
+    def _try_uart_write(self, uart, cmd):
+        try:
+            print(uart.port, ":",self.protocol.encode_frame(1, 1))
+            uart.write(self.protocol.encode_frame(1, 1))
+        except:
+            print(3)
+
     def check_port(self, port):
         result = {}
         thread = threading.Thread(target=self._try_open_port, args=(port, result))
@@ -35,11 +43,13 @@ class UARTConnection:
         if uart is None:
             return {"status": "error", "message": f"Порт {port.device} не доступний або зайнятий."}
         try:
-            uart.write(self.init_paket)
+            thread_for_uart_write = threading.Thread(target=self._try_uart_write, args=(uart, 1))
+            thread_for_uart_write.start()
             start_time = time.time()
             while time.time() - start_time < self.CONNECT_TIMEOUT:
                 response = uart.read(5)
                 if response:
+                    print(self.protocol.decode_frame(response))
                     decoded_response = self.protocol.decode_frame(response)
 
                     if "cmd" in decoded_response and decoded_response["cmd"] == 1 and decoded_response["payload"] == 2:
@@ -58,10 +68,9 @@ class UARTConnection:
     def auto_connect(self):
 
         """Перевіряє доступні COM-порти та підключається до STM."""
-        ports = list(serial.tools.list_ports.comports())
+        ports = serial.tools.list_ports.comports()
         if not ports:
             return {"status": "error", "message": "Немає доступних COM-портів."}
-
         for port in ports:
             result = self.check_port(port)
             if result["status"] == "success":
@@ -84,7 +93,6 @@ class UARTConnection:
         """Створює словник доступних портів"""
         ports = serial.tools.list_ports.comports()
         ports_dict = {}
-
         for port in ports:
             try:
                 port_number = int(port.device.replace("COM", ""))
