@@ -60,11 +60,14 @@ uint8_t second_byte;     		//значення кнопки, що натиска�
 uint8_t time_count;
 uint8_t im_single_packet; //команда для одноразової передачі через таймер
 uint8_t flag = 0;             //команда для паузи через пробіл
+uint8_t error_massage[4] = {0x2D,0x3E,0x4C,0xff};
+uint8_t error_code;
 //Змінні логіки гри
 uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
 uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
 uint8_t command_receiver;
 uint8_t dead_inside;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -144,8 +147,8 @@ int main(void)
 
       //HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
-      //uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
-     // HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
+      //uint8_t Decoder_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
+     // HAL_UART_Transmit(&huart1, &Decoder_receive, 1, 100);
 
     /* USER CODE END WHILE */
 
@@ -333,13 +336,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
         switch(cmd_code) {
             case 1: {
                 uint8_t Decoder_receive = decode_frame(rx_buffer, sizeof(rx_buffer));
+
                 if (Decoder_receive == 0 && second_byte == 1) {
                     uint8_t response[5] = {0x7E, 0x01, 0x02, 0xD1, 0x93};
                     HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
                     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
                 }
-                if (Decoder_receive == 4)
-                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+                if (Decoder_receive==4) error_code = 1;
+                if (Decoder_receive==2) error_code =3;
+                if (Decoder_receive==1) error_code =2;
                 break;
             }
             case 3: {
@@ -415,6 +420,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+	uint8_t Error_buffer[5];
+		 switch (error_code) {
+		        case 1:
+		        	 encode_frame_err(&error_massage[0], Error_buffer, 0x01);
+		        		            HAL_UART_Transmit(&huart1, Error_buffer,sizeof(Error_buffer),100);
+
+		        		            break;
+		        case 2:
+
+		        	 encode_frame_err(&error_massage[1], Error_buffer, 0x01);
+		        		            HAL_UART_Transmit(&huart1, Error_buffer,sizeof(Error_buffer),100);
+
+		        		            break;
+		        case 4:  // Невірний CRC
+		        	 encode_frame_err(&error_massage[2], Error_buffer, 0x01);
+		        		            HAL_UART_Transmit(&huart1, Error_buffer,sizeof(Error_buffer),100);
+
+		        		            break;
+		        default:
+		        	 encode_frame_err(&error_massage[3], Error_buffer, 0x01);
+		        		            HAL_UART_Transmit(&huart1, Error_buffer,sizeof(Error_buffer),100);
+
+		        		            break;
+		 }
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
