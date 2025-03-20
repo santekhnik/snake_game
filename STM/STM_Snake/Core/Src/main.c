@@ -17,12 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "protocol.h"
+#include "SnakeLogic.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,13 +42,29 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
-uint8_t tx_buffer[128];// чому ми видалили tx_buffer?
-uint8_t frame[5]; //от фрейм хай буде
 
+
+//Змінні передачі даних (приймання, відправка)
+uint8_t tx_buffer[256];			//буфер повідомлень на надсилання
+uint8_t rx_buffer[5];			//буфер повідомлень на приймання
+uint8_t *payload_len;			//довжина корисного навантаження в пакеті "змійки"
+uint8_t payload[256];			//корисна інформація в пакеті "змійки"
+//uint8_t *cmd_byte;	 			//байт команди в будь-якому вхідному пакеті
+uint8_t second_byte;     		//значення кнопки, що натискається на PC
+uint8_t time_count;
+uint8_t im_single_packet; //команда для одноразової передачі через таймер
+uint8_t flag = 0;             //команда для паузи через пробіл
+//Змінні логіки гри
+uint8_t frog_x;				//"жабка" X або яблуко, виокристовується в пакеті "змійки"
+uint8_t frog_y;				//"жабка" Y або яблуко, виокристовується в пакеті "змійки"
+uint8_t command_receiver;
+uint8_t dead_inside;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,28 +72,27 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
-void simulate_snake_game();
+//void simulate_snake_game();
+void randomize_apple();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+
+
 //HAL_UART_Receive(&huart1, )
 
-
-
-
-
-
-void simulate_snake_game() {
+/*void simulate_snake_game() {
     uint8_t frog_x = 20, frog_y = 25;
     uint8_t payload[8] = {10,15,11,15,12,15,13,15};
 
-    uint8_t frame_length = encode_frame_snake(payload, 6, frame, 0x02, frog_x, frog_y);
+    uint8_t frame_length = encode_frame_snake(payload, 6, rx_buffer, 0x02, frog_x, frog_y);
 
-    HAL_UART_Transmit(&huart1, frame, frame_length, 100);
-}
+    HAL_UART_Transmit(&huart1, rx_buffer, frame_length, 100);
+}*/
 /* USER CODE END 0 */
 
 /**
@@ -87,6 +103,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	// Якщо змійка зіткнулася сама з собою
 
   /* USER CODE END 1 */
 
@@ -94,7 +111,6 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
 
   /* USER CODE BEGIN Init */
 
@@ -111,8 +127,12 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_DMA(&huart1,frame,sizeof(frame));
+
+  HAL_UART_Receive_DMA(&huart1,rx_buffer,sizeof(rx_buffer));
+  randomize_apple(&frog_x, &frog_y);
+
   //simulate_snake_game();
   /* USER CODE END 2 */
 
@@ -122,9 +142,9 @@ int main(void)
   {
 	  //simulate_snake_game();
 
-      //HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
+      //HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
-      //uint8_t test_receive = decode_frame(frame,sizeof(frame));
+      //uint8_t test_receive = decode_frame(rx_buffer,sizeof(rx_buffer));
      // HAL_UART_Transmit(&huart1, &test_receive, 1, 100);
 
     /* USER CODE END WHILE */
@@ -158,7 +178,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -177,6 +196,51 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 11999;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 999;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
 }
 
 /**
@@ -263,25 +327,85 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
+        uint8_t cmd_code = rx_buffer[1];
+        second_byte = rx_buffer[2];
 
-    	uint8_t handler_prot = frame[1];
-    	switch(handler_prot){
-    		case(1):
+        switch(cmd_code) {
+            case 1: {
+                uint8_t Decoder_receive = decode_frame(rx_buffer, sizeof(rx_buffer));
+                if (Decoder_receive == 0 && second_byte == 1) {
+                    uint8_t response[5] = {0x7E, 0x01, 0x02, 0xD1, 0x93};
+                    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
+                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+                }
+                if (Decoder_receive == 4)
+                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+                break;
+            }
+            case 3: {
 
-			uint8_t test_receive = decode_frame(frame,sizeof(frame));
-    		HAL_UART_Transmit(&huart1, frame,sizeof(frame), 100);
-    		if  (test_receive == 4) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_8);//just for test(delete this in full version)
-    		if  (test_receive==0) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_9);
+                if (second_byte == 0) {
+                    reset_game(&frog_x, &frog_y);
+                    move_snake(0, &frog_x, &frog_y, payload);
+                    uint8_t frame_length = encode_frame_snake(payload, snake_length * 2, tx_buffer, 0x02, frog_x, frog_y);
+                    HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+                    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,GPIO_PIN_RESET);
+                    HAL_TIM_Base_Stop_IT(&htim2);
+                    dead_inside = 0;
 
-    		break;
+                 }
 
-    		case(3):
+                    if (second_byte == 5) {
+
+                    	if (flag == 0) {
+                        HAL_TIM_Base_Stop_IT(&htim2);
+                        flag = 1;
+                        }
+
+                        else {
+                        HAL_TIM_Base_Start_IT(&htim2);
+                        flag = 0;
+                 }
+
+             }
+
+                if (second_byte == 1 || second_byte == 2 || second_byte == 3 || second_byte == 4) {
+                    HAL_TIM_Base_Start_IT(&htim2);
+                }
+                break;
+            }
+        }
+        HAL_UART_Receive_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
 
 
+        }
+    }
+
+
+
+
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == TIM2) {
+        time_count++;
+        if (time_count == 1) {
+        	command_receiver = second_byte;
+            move_snake(command_receiver, &frog_x, &frog_y, payload);
+            uint8_t frame_length = encode_frame_snake(payload, snake_length * 2, tx_buffer, 0x02, frog_x, frog_y);
+            HAL_UART_Transmit(&huart1, tx_buffer, frame_length, 100);
+            time_count = 0;
+        }
+    	if (dead_inside == 8) {
+    		reset_game(&frog_x, &frog_y);
+    	    uint8_t response[5] = {0x7E, 0x06, 0x01, 0xD1, 0x93}; // (CRC треба згенерувати)
+    	    HAL_UART_Transmit(&huart1, response, sizeof(response), 100);
+    		HAL_TIM_Base_Stop_IT(&htim2);
+    		dead_inside = 0;
     	}
-    	 HAL_UART_Receive_DMA(&huart1, frame, sizeof(frame));
     }
 }
+
 /* USER CODE END 4 */
 
 /**
@@ -307,7 +431,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file,  uint32_t line)
+void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
