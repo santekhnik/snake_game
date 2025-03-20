@@ -54,17 +54,18 @@ start_button = ImageButton(
     "assets/sound_effects/click.mp3.mp3"
 )
 
+""""
 # Кнопка "PORTS" у правому верхньому куті
 settings_button = ImageButton(
-    WIDTH - 252 + 150,  # x = ширина екрана - ширина кнопки - відступ
-    20,                # y = відступ зверху
-    85, 85,
+    WIDTH - 252 + 170,  # x = ширина екрана - ширина кнопки - відступ
+    15,                # y = відступ зверху
+    75, 75,
     "",
     "assets/images/settings_button.png",
     "",
     "assets/sound_effects/click.mp3.mp3"
 )
-
+"""
 # Центрована кнопка "EXIT"
 exit_button = ImageButton(
     WIDTH / 2 - (252 / 2), 600, 252, 60,
@@ -72,4 +73,15 @@ exit_button = ImageButton(
     "assets/images/redNormal.png",
     "assets/images/redDown.png",
     "assets/sound_effects/click.mp3.mp3"
+)
+
+back_button = ImageButton(
+    WIDTH - 252 + 170,  # x = ширина екрана - ширина кнопки - відступ
+    15,                # y = відступ зверху
+    80, 60,
+    "BACK",
+    "assets/images/yellowNormal.png",
+    "",
+    "assets/sound_effects/click.mp3.mp3"
+
 )

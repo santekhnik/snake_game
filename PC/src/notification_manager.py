@@ -5,12 +5,12 @@ import time
 class NotificationManager:
     """Менеджер сповіщень у грі"""
 
-    FONT_COLOR = (255, 255, 255)  # Білий колір тексту
-    BG_COLOR = (50, 50, 50)  # Темно-сірий фон
+    FONT_COLOR = (0, 255, 0)  # Зелений колір тексту
+    BG_COLOR = (46, 46, 46)  # Темно-сірий фон
 
     def __init__(self):
         self.notifications = []  # Список активних сповіщень
-        self.font = pygame.font.Font(None, 36)  # Шрифт сповіщень
+        self.font = pygame.font.Font(None, 25)  # Шрифт сповіщень
 
     def show(self, message, duration=2):
         """Додає сповіщення, яке зникне через duration секунд"""
@@ -23,7 +23,7 @@ class NotificationManager:
 
         for index, notification in enumerate(self.notifications):
             text_surface = self.font.render(notification["message"], True, self.FONT_COLOR)
-            text_rect = text_surface.get_rect(center=(screen.get_width() // 2, 50 + index * 40))
+            text_rect = text_surface.get_rect(center=(screen.get_width() // 6, 40 + index * 25))
 
             pygame.draw.rect(screen, self.BG_COLOR, text_rect.inflate(20, 10))
             screen.blit(text_surface, text_rect)
