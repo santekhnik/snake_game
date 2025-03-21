@@ -1,14 +1,14 @@
 import struct
 
 class STMProtocol:
-
     START_BYTE = 0x7E
     CRC_POLY = 0x1021
     ENCODE_COMMANDS = [1, 3, 5]
     DECODE_COMMANDS = [1, 2, 4, 6]
 
     def __init__(self):
-        pass
+        self.pause = False
+
 
     def encode_frame(self, cmd: int, payload):
         """Кодування пакета в залежності від команди"""
@@ -37,7 +37,7 @@ class STMProtocol:
         match cmd:
             case 2:
                 return self._decode_game_data(frame)
-            case 1 | 4 | 6:
+            case 1 | 3 | 4 | 6:
                 return self._decode(frame)
 
     def crc16_ccitt(self, data: bytes, cmd: int = 0, frog_x: int = 0, frog_y: int = 0, poly=0x1021, init=0xFFFF):
@@ -107,15 +107,20 @@ class STMProtocol:
         """
         cmd = frame[1]
 
+
         if cmd == 6:
             return {"status": "end"}
 
-        if cmd in {4, 1}:
+        if cmd in {4, 1, 3}:
             if len(frame) < 5:
                 return {"status": "error", "message": "Короткий пакет для CRC"}
 
             payload, received_crc = frame[2], (frame[3] << 8) | frame[4]
             computed_crc = self.crc16_ccitt(bytes([payload]), cmd)
+            if frame[2] == 6:
+                self.pause = True
+            elif frame[2] == 7:
+                self.pause = False
 
             return {
                 "status": "success" if received_crc == computed_crc else "error",
