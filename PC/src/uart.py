@@ -66,6 +66,8 @@ class UARTConnection:
             return {"status": "error", "message": f"Помилка роботи з портом {port.device}: {str(e)}"}
 
     def auto_connect(self):
+        if self.uart and self.uart.is_open:
+            self.uart.close()
 
         """Перевіряє доступні COM-порти та підключається до STM."""
         ports = serial.tools.list_ports.comports()
@@ -74,6 +76,7 @@ class UARTConnection:
         for port in ports:
             result = self.check_port(port)
             if result["status"] == "success":
+                print(result, 3)
                 return result
 
         return {"status": "error", "message": "STM не знайдено."}
@@ -121,6 +124,7 @@ class UARTConnection:
         if not self.uart:
             return {"status": "error", "message": "UART не підключено"}
 
+
         try:
             header = self.uart.read(2)
             if len(header) < 2:
@@ -129,6 +133,7 @@ class UARTConnection:
                 return {"status": "error", "message": "Короткий 2х байтовий пакет"}
 
             start_byte, cmd = header
+
 
             if start_byte != 0x7E:
                 return {"status": "error", "message": "Невірний стартовий байт"}
